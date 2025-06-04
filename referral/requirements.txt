@@ -71,9 +71,9 @@ pyroscope-io==0.8.8 \
     --hash=sha256:422286f356d5be69bb0754671cb43c233a3fca68ac7c65c05451986f11bac0e3 \
     --hash=sha256:d33df6c2742eef9868897d199e4e1efec3f5d18377cc73d273b74f7f5e60ac4b
     # via referral (pyproject.toml)
-pytest==8.3.5 \
-    --hash=sha256:c69214aa47deac29fad6c2a4f590b9c4a9fdb16a403176fe154b79c0b4d4d820 \
-    --hash=sha256:f4efe70cc14e511565ac476b57c279e12a855b11f48f212af1080ef2263d3845
+pytest==8.4.0 \
+    --hash=sha256:14d920b48472ea0dbf68e45b96cd1ffda4705f33307dcc86c676c1b5104838a6 \
+    --hash=sha256:f40f825768ad76c0977cbacdf1fd37c6f7a468e460ea6a0636078f8972d4517e
     # via referral (pyproject.toml)
 pytest-asyncio==0.25.3 \
     --hash=sha256:9e89518e0f9bd08928f97a3482fdc4e244df17529460bc038291ccaf8f85c7c3 \
