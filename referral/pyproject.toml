@@ -44,7 +44,7 @@ dependencies = [
 ]
 
 [build-system]
-requires = ["setuptools~=76.0"]
+requires = ["setuptools~=78.1"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools.dynamic]
