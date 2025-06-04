@@ -145,9 +145,9 @@ scalene==1.5.51 \
     --hash=sha256:ed0255c5e62dcc39724f7a87a2f79b07a6229802167ca9ddd590d64299b8173e \
     --hash=sha256:f377619c497bb95355967af9a48a5fc6366e77e66067c4b30b7aee8512cca889
     # via referral (pyproject.toml)
-setuptools==78.1.1 \
-    --hash=sha256:c3a9c4211ff4c309edb8b8c4f1cbfa7ae324c4ba9f91ff254e3d305b9fd54561 \
-    --hash=sha256:fcc17fd9cd898242f6b4adfaca46137a9edef687f43e6f78469692a5e70d851d
+setuptools==80.9.0 \
+    --hash=sha256:062d34222ad13e0cc312a4c02d73f059e86a4acbfbdea8f8f76b28c99f306922 \
+    --hash=sha256:f36b47402ecde768dbfafc46e8e4207b4360c654f1f3bb84475f0a28628fb19c
     # via referral (pyproject.toml)
 SQLAlchemy==2.0.41 \
     --hash=sha256:023b3ee6169969beea3bb72312e44d8b7c27c75b347942d943cf49397b7edeb5 \
