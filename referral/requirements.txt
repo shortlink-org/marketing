@@ -208,9 +208,9 @@ SQLAlchemy==2.0.39 \
     --hash=sha256:f2bcb085faffcacf9319b1b1445a7e1cfdc6fb46c03f2dce7bc2d9a4b3c1cdc5 \
     --hash=sha256:fe193d3ae297c423e0e567e240b4324d6b6c280a048e64c77a3ea6886cc2aa87
     # via referral (pyproject.toml)
-testcontainers==4.9.2 \
-    --hash=sha256:348c72d369d0bd52b57ab4f07a965ae9562837098c28f0522b969b064b779f10 \
-    --hash=sha256:36bd2b58d91f2fc7ac4f4a73c6ec00e5e60c259c10f208dbfe3161029889be92
+testcontainers==4.10.0 \
+    --hash=sha256:03f85c3e505d8b4edeb192c72a961cebbcba0dd94344ae778b4a159cb6dcf8d3 \
+    --hash=sha256:31ed1a81238c7e131a2a29df6db8f23717d892b592fa5a1977fd0dcd0c23fc23
     # via referral (pyproject.toml)
 uvicorn==0.34.0 \
     --hash=sha256:023dc038422502fa28a09c7a30bf2b6991512da7dcdb8fd35fe57cfc154126f4 \
