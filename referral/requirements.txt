@@ -18,25 +18,25 @@ loguru==0.7.3 \
     --hash=sha256:19480589e77d47b8d85b2c827ad95d49bf31b0dcde16593892eb51dd18706eb6 \
     --hash=sha256:31a33c10c8e1e10422bfd431aeb5d351c7cf7fa671e3c4df004162264b28220c
     # via referral (pyproject.toml)
-opentelemetry-api==1.31.0 \
-    --hash=sha256:145b72c6c16977c005c568ec32f4946054ab793d8474a17fd884b0397582c5f2 \
-    --hash=sha256:d8da59e83e8e3993b4726e4c1023cd46f57c4d5a73142e239247e7d814309de1
+opentelemetry-api==1.35.0 \
+    --hash=sha256:a111b959bcfa5b4d7dffc2fbd6a241aa72dd78dd8e79b5b1662bda896c5d2ffe \
+    --hash=sha256:c4ea7e258a244858daf18474625e9cc0149b8ee354f37843415771a40c25ee06
     # via referral (pyproject.toml)
-opentelemetry-exporter-otlp==1.31.0 \
-    --hash=sha256:225854e12b449e77e818d749b5b38faf65ef86b7a862329611c931ca79a95f73 \
-    --hash=sha256:3488eb25a2367808d031e3de59dda9831e9a4cbb2828e62f912ed7295a997ef9
+opentelemetry-exporter-otlp==1.35.0 \
+    --hash=sha256:8e6bb9025f6238db7d69bba7ee37c77e4858d0a1ff22a9e126f7c9e017e83afe \
+    --hash=sha256:f94feff09b3524df867c7876b79c96cef20068106cb5efe55340e8d08192c8a4
     # via referral (pyproject.toml)
-opentelemetry-exporter-otlp-proto-common==1.31.0 \
-    --hash=sha256:42b402f2340c0612907799d91d13b928314f06c57c362dfa0c074e20b673f43d \
-    --hash=sha256:e7fa0fe8cf2f87c190a59d820b6ba0821234178bc1227b5bd40ca057622d4ddc
+opentelemetry-exporter-otlp-proto-common==1.35.0 \
+    --hash=sha256:6f6d8c39f629b9fa5c79ce19a2829dbd93034f8ac51243cdf40ed2196f00d7eb \
+    --hash=sha256:863465de697ae81279ede660f3918680b4480ef5f69dcdac04f30722ed7b74cc
     # via referral (pyproject.toml)
-opentelemetry-exporter-otlp-proto-grpc==1.31.0 \
-    --hash=sha256:68ffd825363f9654cc17b59c93a77dd33b352ef6a346822afed8cc24523a4751 \
-    --hash=sha256:d33a98d3768da4705b3c51959ffd49897094454e2d47d1d83293bf29c14712a1
+opentelemetry-exporter-otlp-proto-grpc==1.35.0 \
+    --hash=sha256:ac4c2c3aa5674642db0df0091ab43ec08bbd91a9be469c8d9b18923eb742b9cc \
+    --hash=sha256:ee31203eb3e50c7967b8fa71db366cc355099aca4e3726e489b248cdb2fd5a62
     # via referral (pyproject.toml)
-opentelemetry-exporter-otlp-proto-http==1.31.0 \
-    --hash=sha256:09cbe2f96a1996cae94a426fbc59cc2f5bbe9a246233f15832d295e750b407de \
-    --hash=sha256:d9f00fd0684324e8c2dc13cd9580f94d85b6e10040c5f89a533f611c7583f910
+opentelemetry-exporter-otlp-proto-http==1.35.0 \
+    --hash=sha256:9a001e3df3c7f160fb31056a28ed7faa2de7df68877ae909516102ae36a54e1d \
+    --hash=sha256:cf940147f91b450ef5f66e9980d40eb187582eed399fa851f4a7a45bb880de79
     # via referral (pyproject.toml)
 opentelemetry-exporter-prometheus==0.47b0 \
     --hash=sha256:03e8ebccdaeae3a7dad9909d1203dfce5d6c3311ff715911156ed61d9928ab44 \
@@ -50,9 +50,9 @@ opentelemetry-instrumentation-sqlalchemy==0.47b0 \
     --hash=sha256:997b2c4a624ebcba45b9bda27882622d0ab3028d66a5fb50cdcf3581af04b3d1 \
     --hash=sha256:bbeab06fc421ddae16bb69ca287abb81a131d3dff97de60b02c092887794103d
     # via referral (pyproject.toml)
-opentelemetry-sdk==1.31.0 \
-    --hash=sha256:452d7d5b3c1db2e5e4cb64abede0ddd20690cb244a559c73a59652fdf6726070 \
-    --hash=sha256:97c9a03865e69723725fb64fe04343a488c3e61e684eb804bd7d6da2215dfc60
+opentelemetry-sdk==1.35.0 \
+    --hash=sha256:223d9e5f5678518f4842311bb73966e0b6db5d1e0b74e35074c052cd2487f800 \
+    --hash=sha256:2a400b415ab68aaa6f04e8a6a9f6552908fb3090ae2ff78d6ae0c597ac581954
     # via referral (pyproject.toml)
 protobuf==6.31.1 \
     --hash=sha256:0414e3aa5a5f3ff423828e1e6a6e907d6c65c1d5b7e6e975793d5590bdeecc16 \
