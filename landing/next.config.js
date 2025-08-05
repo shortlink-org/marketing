@@ -43,6 +43,7 @@ const nextConfig = {
     NEXT_PUBLIC_FARO_URI: process.env.FARO_URI || 'http://localhost:3030',
   },
   transpilePackages: ['@shortlink-org/ui-kit'],
+  serverExternalPackages: ['@shortlink-org/ui-kit'],
   compiler: {
     // ssr and displayName are configured by default
     emotion: true,
@@ -75,6 +76,7 @@ const nextConfig = {
     swcTraceProfiling: true,
     webVitalsAttribution: ['CLS', 'FCP', 'FID', 'INP', 'LCP', 'TTFB'],
     turbo: {},
+    clientTraceMetadata: ['sentry-trace', 'baggage'],
     // reactCompiler: true,
     // typedRoutes: true,
   },
