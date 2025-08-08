@@ -11,7 +11,7 @@ require (
 	github.com/stretchr/testify v1.10.0
 	go.opentelemetry.io/otel/trace v1.36.0
 	go.temporal.io/api v1.51.0
-	go.temporal.io/sdk v1.34.0
+	go.temporal.io/sdk v1.35.0
 )
 
 require (
@@ -43,6 +43,7 @@ require (
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/go-redis/cache/v9 v9.0.0 // indirect
 	github.com/go-sql-driver/mysql v1.9.2 // indirect
+	github.com/go-viper/mapstructure/v2 v2.2.1 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/golang-migrate/migrate/v4 v4.18.2 // indirect
 	github.com/golang/mock v1.6.0 // indirect
