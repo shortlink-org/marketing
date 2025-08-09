@@ -1,10 +1,9 @@
 .*
 *.yml
 *.md
-cmd
-docs
-boundaries
-node_modules
+*
 
 # Exclude
+!landing
+!ops/dockerfile
 !.env.prod

@@ -27,18 +27,27 @@ ARG BUILD_DATE
 # pnpm only needed here
 ENV PNPM_HOME="/pnpm"
 ENV PATH="${PNPM_HOME}:${PATH}"
+# Disable npm warnings about unknown env configs
+ENV NPM_CONFIG_PROGRESS=false
+ENV NPM_CONFIG_AUDIT=false
+ENV NPM_CONFIG_FUND=false
 RUN corepack enable && corepack prepare pnpm@latest --activate
 
 WORKDIR /app
 
-# Private registry for the Shortlink scope
-RUN echo '@shortlink-org:registry=https://gitlab.com/api/v4/packages/npm/' >> .npmrc
-
 COPY ./landing/ ./
+
+# Create npmrc with proper configuration
+RUN echo '@shortlink-org:registry=https://gitlab.com/api/v4/packages/npm/' > .npmrc \
+ && echo 'registry=https://registry.npmjs.org/' >> .npmrc \
+ && echo 'auto-install-peers=true' >> .npmrc \
+ && echo 'strict-peer-dependencies=false' >> .npmrc \
+ && echo 'prefer-offline=true' >> .npmrc
 
 # Install & build with cache for pnpm store
 RUN --mount=type=cache,id=pnpm-store,target=/pnpm/store \
-    pnpm install --frozen-lockfile \
+    rm -rf node_modules package-lock.json \
+ && pnpm install --frozen-lockfile \
  && pnpm run build
 
 ########################
@@ -84,8 +93,8 @@ COPY ./ops/dockerfile/conf/ui.local     /etc/nginx/conf.d/default.conf
 COPY ./ops/dockerfile/conf/nginx.conf   /etc/nginx/nginx.conf
 COPY ./ops/dockerfile/conf/templates    /etc/nginx/template
 
-# Storybook build from the builder stage
-COPY --from=builder /app/storybook-static /usr/share/nginx/html
+# Next.js export build from the builder stage
+COPY --from=builder /app/out /usr/share/nginx/html
 
 ###############################################################################
 # Health-check, port & runtime user
