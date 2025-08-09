@@ -23,7 +23,7 @@
     "@mui/material": "^7.3.1",
     "@mui/material-nextjs": "^7.3.0",
     "@sentry/nextjs": "^10.3.0",
-    "@shortlink-org/ui-kit": "^0.20250807.213700",
+    "@shortlink-org/ui-kit": "^0.20250809.0",
     "@tailwindcss/line-clamp": "^0.4.4",
     "babel-plugin-react-compiler": "0.0.0",
     "import-in-the-middle": "^1.14.2",
