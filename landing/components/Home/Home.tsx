@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { useTheme, AppBar, Tabs, Tab } from '@mui/material'
+import { useTheme, AppBar, Tabs, Tab, Typography } from '@mui/material'
 import useMediaQuery from '@mui/material/useMediaQuery'
 // @ts-ignore
 import { ToggleDarkMode } from '@shortlink-org/ui-kit'
@@ -32,7 +32,9 @@ const Home = () => {
 
   return (
     <>
-      <ToggleDarkMode id="ToggleDarkMode" />
+      <div style={{ position: 'absolute', top: '1.5em', right: '6.5em' }}>
+        <ToggleDarkMode id="ToggleDarkMode" />
+      </div>
 
       <div className="relative flex flex-col text-gray-700 bg-white shadow-lg bg-clip-border rounded-2xl max-w-4xl mx-auto mt-12">
         <AppBar position="static" id="menu" color={appBarColor} className="mt-[10em] md:mt-0">
@@ -166,13 +168,21 @@ const Home = () => {
         </TabPanel>
       </div>
 
-      <p className="text-sm text-gray-600 text-center my-4">
-        Version: <b>{process.env.NEXT_PUBLIC_GIT_TAG}</b>
+      <Typography 
+        variant="body2" 
+        align="center" 
+        sx={{ 
+          color: '#6b7280',
+          my: 2,
+          fontSize: '0.875rem'
+        }}
+      >
+        Version: <strong>{process.env.NEXT_PUBLIC_GIT_TAG}</strong>
         {' && '}
-        <Link href={process.env.NEXT_PUBLIC_CI_PIPELINE_URL}>
-          Pipeline: <b>{process.env.NEXT_PUBLIC_PIPELINE_ID}</b>
+        <Link href={process.env.NEXT_PUBLIC_CI_PIPELINE_URL} style={{ color: 'inherit', textDecoration: 'underline' }}>
+          Pipeline: <strong>{process.env.NEXT_PUBLIC_PIPELINE_ID}</strong>
         </Link>
-      </p>
+      </Typography>
     </>
   )
 }

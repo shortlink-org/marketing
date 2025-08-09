@@ -18,7 +18,19 @@ const TabContent: React.FC<TabContentProps> = ({ title, cards }) => {
 
   return (
     <div className="my-2 mx-5 max-w-4xl mx-auto">
-      <h2 className="text-2xl prose text-center my-5 text-gray-800 dark:text-white">{title}</h2>
+      <Typography 
+        variant="h4" 
+        component="h2" 
+        align="center"
+        sx={{ 
+          fontWeight: 'bold',
+          fontSize: { xs: '1.5rem', sm: '2rem' },
+          margin: '1em 0',
+          color: '#6b7280'
+        }}
+      >
+        {title}
+      </Typography>
 
       <Stack
         spacing={{ xs: 1, sm: 1, md: 2 }}
@@ -29,6 +41,7 @@ const TabContent: React.FC<TabContentProps> = ({ title, cards }) => {
         alignItems="center"
         useFlexGap
         flexWrap="wrap"
+        sx={{ padding: '1em 1em' }}
       >
         {cards.map((card) => (
           <Link href={card.url} key={card.url} passHref>

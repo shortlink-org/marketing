@@ -5,7 +5,7 @@ import { DEFAULT_ONLOAD_NAME, DEFAULT_SCRIPT_ID, SCRIPT_URL } from '@marsidev/re
 import { Turnstile } from '@marsidev/react-turnstile'
 import CssBaseline from '@mui/material/CssBaseline'
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v14-appRouter'
-import { ThemeProvider as MuiThemeProvider } from '@mui/material/styles'
+import { ThemeProvider as MuiThemeProvider, createTheme } from '@mui/material/styles'
 import InitColorSchemeScript from '@mui/material/InitColorSchemeScript'
 import { theme as baseTheme } from '@shortlink-org/ui-kit/dist/theme/theme'
 import Script from 'next/script'
@@ -33,6 +33,14 @@ import { ThemeProvider as NextThemeProvider } from 'next-themes'
 //   ],
 // })
 
+// Create theme with manual color scheme selector
+const theme = createTheme({
+  ...baseTheme,
+  cssVariables: {
+    colorSchemeSelector: 'class',
+  },
+})
+
 // @ts-ignore
 export function Providers({ children, ...props }) {
   const [isCaptcha, setIsCaptcha] = useState(false)
@@ -40,7 +48,7 @@ export function Providers({ children, ...props }) {
   return (
     <AppRouterCacheProvider>
       <NextThemeProvider enableSystem attribute="class" defaultTheme={'light'}>
-        <MuiThemeProvider theme={baseTheme}>
+        <MuiThemeProvider theme={theme}>
           <Script id={DEFAULT_SCRIPT_ID} src={`${SCRIPT_URL}?onload=${DEFAULT_ONLOAD_NAME}`} strategy="afterInteractive" />
           <InitColorSchemeScript />
 
@@ -48,16 +56,20 @@ export function Providers({ children, ...props }) {
             {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
             <CssBaseline />
 
-            <Turnstile
-              siteKey={process.env.NEXT_PUBLIC_CLOUDFLARE_SITE_KEY}
-              injectScript={false}
-              className="captcha"
-              onSuccess={() => setIsCaptcha(true)}
-              onError={() => setIsCaptcha(false)}
-              onAbort={() => setIsCaptcha(false)}
-            />
+            <div style={{ position: 'absolute', top: '1em', left: '1em' }}>
+              <Turnstile
+                siteKey={process.env.NEXT_PUBLIC_CLOUDFLARE_SITE_KEY}
+                injectScript={false}
+                className="captcha"
+                onSuccess={() => setIsCaptcha(true)}
+                onError={() => setIsCaptcha(false)}
+                onAbort={() => setIsCaptcha(false)}
+              />
+            </div>
 
-            {isCaptcha && children}
+            <div style={{ marginTop: '6em' }}>
+              {isCaptcha && children}
+            </div>
           </div>
         </MuiThemeProvider>
       </NextThemeProvider>
