@@ -22,7 +22,7 @@
     "@marsidev/react-turnstile": "1.3.0",
     "@mui/material": "^7.3.1",
     "@mui/material-nextjs": "^7.3.0",
-    "@sentry/nextjs": "^9.45.0",
+    "@sentry/nextjs": "^10.0.0",
     "@shortlink-org/ui-kit": "^0.20250807.213700",
     "@tailwindcss/line-clamp": "^0.4.4",
     "babel-plugin-react-compiler": "0.0.0",
