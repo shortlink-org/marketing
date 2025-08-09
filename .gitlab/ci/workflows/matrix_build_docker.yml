@@ -9,4 +9,4 @@
       - APPLICATION: storybook
         REGISTRY_IMAGE: $CI_REGISTRY_IMAGE/landing
         DOCKERFILE_PATH: ops/dockerfile/landing.Dockerfile
-        DOCKERFILE_ARGS: "--build-arg API_URI=https://shortlink.best"
+        DOCKERFILE_ARGS: "--build-arg API_URI=https://shortlink.best --build-arg NEXT_PUBLIC_CLOUDFLARE_SITE_KEY=&{NEXT_PUBLIC_CLOUDFLARE_SITE_KEY}"
