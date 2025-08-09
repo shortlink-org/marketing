@@ -20,7 +20,7 @@ ingress:
   paths:
     - path: /
       service:
-        name: landing
+        name: shortlink-marketing-landing
         port: 8080
 
   tls:
