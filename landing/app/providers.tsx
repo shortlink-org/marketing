@@ -5,9 +5,9 @@ import { DEFAULT_ONLOAD_NAME, DEFAULT_SCRIPT_ID, SCRIPT_URL } from '@marsidev/re
 import { Turnstile } from '@marsidev/react-turnstile'
 import CssBaseline from '@mui/material/CssBaseline'
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v14-appRouter'
-import { CssVarsProvider } from '@mui/material/styles'
+import { ThemeProvider as MuiThemeProvider } from '@mui/material/styles'
 import InitColorSchemeScript from '@mui/material/InitColorSchemeScript'
-import { theme } from '@shortlink-org/ui-kit/src/theme/theme'
+import { theme as baseTheme } from '@shortlink-org/ui-kit/dist/theme/theme'
 import Script from 'next/script'
 import { ThemeProvider as NextThemeProvider } from 'next-themes'
 
@@ -40,15 +40,13 @@ export function Providers({ children, ...props }) {
   return (
     <AppRouterCacheProvider>
       <NextThemeProvider enableSystem attribute="class" defaultTheme={'light'}>
-        <CssVarsProvider theme={theme}>
+        <MuiThemeProvider theme={baseTheme}>
           <Script id={DEFAULT_SCRIPT_ID} src={`${SCRIPT_URL}?onload=${DEFAULT_ONLOAD_NAME}`} strategy="afterInteractive" />
           <InitColorSchemeScript />
 
           <div className="flex m-auto text-black dark:bg-gray-800 dark:text-white flex-col">
             {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
             <CssBaseline />
-
-            {isCaptcha && children}
 
             <Turnstile
               siteKey={process.env.NEXT_PUBLIC_CLOUDFLARE_SITE_KEY}
@@ -58,8 +56,10 @@ export function Providers({ children, ...props }) {
               onError={() => setIsCaptcha(false)}
               onAbort={() => setIsCaptcha(false)}
             />
+
+            {isCaptcha && children}
           </div>
-        </CssVarsProvider>
+        </MuiThemeProvider>
       </NextThemeProvider>
     </AppRouterCacheProvider>
   )
