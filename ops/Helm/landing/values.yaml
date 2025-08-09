@@ -48,8 +48,8 @@ deploy:
   annotations: {}
 
   image:
-    repository: registry.gitlab.com/shortlink-org/shortlink/landing
-    tag: 0.19.0
+    repository: registry.gitlab.com/shortlink-org/marketing/landing
+    tag: main
     # -- Global imagePullPolicy
     # Default: 'Always' if image tag is 'latest', else 'IfNotPresent'
     # Ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
