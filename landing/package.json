@@ -34,7 +34,7 @@
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "require-in-the-middle": "^7.5.2",
-    "tailwindcss": "4.1.8",
+    "tailwindcss": "4.1.11",
     "typescript": "^5.9.2"
   },
   "devDependencies": {
