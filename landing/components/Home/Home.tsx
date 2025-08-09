@@ -65,7 +65,7 @@ const Home = () => {
             key="shortlink-ui"
             cards={[
               { name: 'Next', url: '/next' },
-              { name: 'ui-kit', url: '/storybook/' },
+              { name: 'ui-kit', url: 'https://ui-kit.shortlink.best' },
             ]}
           />
 
