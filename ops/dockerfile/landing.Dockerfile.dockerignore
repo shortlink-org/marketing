@@ -3,11 +3,7 @@
 *.md
 cmd
 docs
-ds
-internal
 boundaries
-ops
-pkg
 node_modules
 
 # Exclude

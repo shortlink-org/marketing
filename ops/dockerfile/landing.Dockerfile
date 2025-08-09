@@ -39,7 +39,7 @@ COPY ./landing/ ./
 # Install & build with cache for pnpm store
 RUN --mount=type=cache,id=pnpm-store,target=/pnpm/store \
     pnpm install --frozen-lockfile \
- && pnpm run landing:build
+ && pnpm run build
 
 ########################
 # 2️⃣  Runtime stage
