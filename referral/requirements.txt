@@ -83,9 +83,9 @@ pytest-cov==6.2.1 \
     --hash=sha256:25cc6cc0a5358204b8108ecedc51a9b57b34cc6b8c967cc2c01a4e00d8a67da2 \
     --hash=sha256:f5bc4c23f42f1cdd23c70b1dab1bbaef4fc505ba950d53e0081d0730dd7e86d5
     # via referral (pyproject.toml)
-pytest-factoryboy==2.7.0 \
-    --hash=sha256:67fc54ec8669a3feb8ac60094dd57cd71eb0b20b2c319d2957873674c776a77b \
-    --hash=sha256:bf3222db22d954fbf46f4bff902a0a8d82f3fc3594a47c04bbdc0546ff4c59a6
+pytest-factoryboy==2.8.1 \
+    --hash=sha256:2221d48b31b8b8ccaa739c6a162fb50a43a4de6dff6043f249d2807a3462548d \
+    --hash=sha256:91c762cb236bf34b11efdf2e54bafae33114488235621e8b2c4bd9fd77838784
     # via referral (pyproject.toml)
 python-dotenv==1.1.1 \
     --hash=sha256:31f23644fe2602f88ff55e1f5c79ba497e01224ee7737937930c448e4d0e24dc \
