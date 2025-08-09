@@ -23,13 +23,10 @@ ingress:
         name: landing
         port: 8080
 
-  istio:
-    match:
-      - uri:
-          prefix: /
-    route:
-      destination:
-        port: 8080
+  tls:
+    - secretName: landing-tls
+      hosts:
+        - shortlink.best
 
 deploy:
   replicaCount: 1
