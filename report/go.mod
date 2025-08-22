@@ -5,7 +5,7 @@ go 1.24.2
 toolchain go1.25.0
 
 require (
-	github.com/google/wire v0.6.0
+	github.com/google/wire v0.7.0
 	github.com/shortlink-org/shortlink v0.0.0-20250531003000-510e6143a4d1
 	github.com/spf13/viper v1.20.1
 	github.com/stretchr/testify v1.10.0
