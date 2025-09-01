@@ -8,7 +8,7 @@ require (
 	github.com/google/wire v0.7.0
 	github.com/shortlink-org/shortlink v0.0.0-20250531003000-510e6143a4d1
 	github.com/spf13/viper v1.20.1
-	github.com/stretchr/testify v1.10.0
+	github.com/stretchr/testify v1.11.1
 	go.opentelemetry.io/otel/trace v1.37.0
 	go.temporal.io/api v1.52.0
 	go.temporal.io/sdk v1.35.0
