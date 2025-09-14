@@ -3,12 +3,20 @@ cargo-features = []
 [package]
 name = "newsletter"
 version = "0.1.0"
-rust-version = "1.89"
+rust-version = "1.82"
 authors = ["Login Victor <batazor111@gmail.com>"]
 keywords = ["newsletter"]
 readme = "README.md"
 edition = "2021"
 repository = "https://github.com/shortlink-org/shortlink"
+
+[lib]
+name = "newsletter"
+path = "src/lib.rs"
+
+[[bin]]
+name = "newsletter"
+path = "src/main.rs"
 
 [dependencies]
 futures = { version = "0.3.31", default-features = true, features = ["async-await"] }
@@ -38,11 +46,15 @@ tonic-health = "0.14"
 tonic-reflection = { version = "0.14", features = ["server"] }
 tracing = { version = "0.1", features = ["attributes"] }
 diesel = { version = "2.2", features = ["postgres", "chrono", "uuid", "serde_json"] }
-diesel-async = { version = "0.6", features = ["postgres", "bb8"] }
+diesel-async = { version = "0.5", features = ["postgres", "bb8"] }
 diesel_migrations = { version = "2.2", features = ["postgres"] }
 chrono = "0.4.42"
 tracing-subscriber = { version = "0.3", features = ["fmt", "json", "env-filter"] }
 anyhow = "1.0.99"
+
+[dev-dependencies]
+cucumber = "0.21"
+tokio-test = "0.4"
 
 [dependencies.uuid]
 features = ["serde", "v4"]

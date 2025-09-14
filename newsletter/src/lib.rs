@@ -1,0 +1,6 @@
+pub mod domain;
+pub mod infrastructure;
+pub mod repository;
+
+// Re-export commonly used items for easier testing access
+pub use infrastructure::db::{build_pool_with_url, run_migrations_with_url, PgPool};
