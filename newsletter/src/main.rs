@@ -52,7 +52,9 @@ async fn main() -> anyhow::Result<()> {
     info!(message = "Starting gRPC server", %host, %port);
 
     // ---------- Service ----------
-    let service = MyNewsletterService::default();
+    let pool = build_pool().await?;
+    run_migrations().await?;
+    let service = MyNewsletterService::new(pool.clone());
 
     // ---------- Graceful shutdown ----------
     // Standard tonic + Tokio signal pattern.

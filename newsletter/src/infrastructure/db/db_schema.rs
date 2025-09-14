@@ -1,5 +1,5 @@
 diesel::table! {
-    shortlink.newsletters (id) {
+    newsletters (id) {
         id -> BigInt,
         email -> Text,
         active -> Bool,
