@@ -1,91 +1,67 @@
-use crate::domain::NewsLetter;
-use std::env;
-use tokio_postgres::{Client, NoTls};
+use crate::domain::newsletter::newsletter::Newsletter;
+use crate::infrastructure::db::db_schema::newsletters;
+use crate::infrastructure::db::PgPool;
 
-type Error = Box<dyn std::error::Error + Send + Sync + 'static>;
+use anyhow::Result;
+use diesel::prelude::*;
+use diesel::SelectableHelper;
+// <- for .as_select()
+use diesel_async::RunQueryDsl;
+// <- async query DSL
 
-pub async fn new() -> Result<Client, Error> {
-    let postgres_uri = env::var("STORE_POSTGRES_URI").unwrap();
-
-    // Connect to the database.
-    let (client, connection) = tokio_postgres::connect(&postgres_uri, NoTls).await?;
-
-    // The connection object performs the actual communication with the database,
-    // so spawn it off to run on its own.
-    tokio::spawn(async move {
-        if let Err(e) = connection.await {
-            eprintln!("connection error: {}", e);
-        }
-    });
-
-    Ok(client)
+#[derive(Debug, Clone, Queryable, Selectable)]
+#[diesel(table_name = newsletters)]
+#[diesel(check_for_backend(diesel::pg::Pg))] // optional: extra compile-time checks
+struct NewsletterRow {
+    pub id: i64,
+    pub email: String,
+    pub active: bool,
+    pub created_at: chrono::DateTime<chrono::Utc>,
 }
 
-pub async fn list() -> std::result::Result<Vec<NewsLetter>, Error> {
-    let client = new().await?;
-
-    let rows = client
-        .query("SELECT id, email FROM shortlink.newsletters", &[])
-        .await?;
-
-    let mut newsletters = Vec::new();
-    for row in rows.iter() {
-        newsletters.push(NewsLetter {
-            _id: row.get(0),
-            email: row.get(1),
-        });
-    }
-
-    Ok(newsletters)
+#[derive(Insertable)]
+#[diesel(table_name = newsletters)]
+#[diesel(check_for_backend(diesel::pg::Pg))] // optional
+struct NewNewsletter<'a> {
+    pub email: &'a str,
+    pub active: bool,
 }
 
-pub async fn add(email: &str) -> std::result::Result<(), Error> {
-    let client = new().await?;
-    client
-        .execute(
-            "INSERT INTO shortlink.newsletters (email) VALUES ($1)",
-            &[&email],
-        )
-        .await?;
+pub async fn list(pool: &PgPool) -> Result<Vec<Newsletter>> {
+    let mut conn = pool.get().await?; // bb8 RunError -> anyhow::Error
+    let rows: Vec<NewsletterRow> = newsletters::table
+        .select(NewsletterRow::as_select()) // requires SelectableHelper
+        .order(newsletters::id.desc())
+        .load(&mut conn)
+        .await?; // Diesel error -> anyhow::Error
 
+    Ok(rows
+        .into_iter()
+        .map(|r| Newsletter {
+            email: r.email,
+            active: r.active,
+        })
+        .collect())
+}
+
+pub async fn add(pool: &PgPool, email: &str) -> Result<()> {
+    let mut conn = pool.get().await?;
+    diesel::insert_into(newsletters::table)
+        .values(&NewNewsletter {
+            email,
+            active: true,
+        })
+        .on_conflict(newsletters::email)
+        .do_nothing()
+        .execute(&mut conn)
+        .await?;
     Ok(())
 }
 
-pub async fn delete(email: &str) -> std::result::Result<(), Error> {
-    let client = new().await?;
-    client
-        .execute(
-            "DELETE FROM shortlink.newsletters WHERE email=$1",
-            &[&email],
-        )
+pub async fn delete(pool: &PgPool, email: &str) -> Result<()> {
+    let mut conn = pool.get().await?;
+    diesel::delete(newsletters::table.filter(newsletters::email.eq(email)))
+        .execute(&mut conn)
         .await?;
-
     Ok(())
-}
-
-mod embedded {
-    use refinery::embed_migrations;
-    embed_migrations!("migrations");
-}
-
-pub(crate) async fn run_migrations() -> Result<Client, Error> {
-    let mut client = new().await?;
-
-    println!("Running DB migrations...");
-
-    let migration_report = embedded::migrations::runner()
-        .run_async(&mut client)
-        .await?;
-
-    for migration in migration_report.applied_migrations() {
-        println!(
-            "Migration Applied - Name: {}, Version: {}",
-            migration.name(),
-            migration.version()
-        );
-    }
-
-    println!("DB migrations finished!");
-
-    Ok(client)
 }

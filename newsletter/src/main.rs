@@ -2,17 +2,40 @@ use std::{env, net::SocketAddr};
 use tonic::transport::Server;
 use tonic_reflection::server::Builder as ReflBuilder;
 
+use infrastructure::db::{build_pool, run_migrations, PgPool};
 use infrastructure::rpc::newsletter::v1::proto::newsletter_service_server::NewsletterServiceServer;
-use infrastructure::rpc::newsletter::v1::{
-    api::MyNewsletterService,
-    proto, // for FILE_DESCRIPTOR_SET
-};
+use infrastructure::rpc::newsletter::v1::{api::MyNewsletterService, proto};
 
+use tracing::{error, info};
+use tracing_subscriber::{fmt, EnvFilter};
+
+mod domain;
 mod infrastructure;
+mod repository;
 
 #[tokio::main]
-async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    // Resolve bind address from env (defaults to 0.0.0.0:50051)
+async fn main() -> anyhow::Result<()> {
+    // Load .env (optional)
+    dotenv::dotenv().ok();
+
+    // ---------- JSON logging (tracing) ----------
+    // Requires tracing-subscriber features: "fmt", "json", "env-filter".
+    // Example: RUST_LOG=info,hyper=warn
+    let env_filter = EnvFilter::try_from_default_env().unwrap_or_else(|_| EnvFilter::new("info"));
+    fmt()
+        .json() // newline-delimited JSON
+        .flatten_event(true) // put event fields at top-level
+        .with_target(true)
+        .with_file(true)
+        .with_line_number(true)
+        .with_env_filter(env_filter)
+        .init();
+
+    // ---------- DB: pool + migrations ----------
+    let _pool: PgPool = build_pool().await?;
+    run_migrations().await?; // matches signature that reads DATABASE_URL internally
+
+    // ---------- Address ----------
     let host = env::var("HOST").unwrap_or_else(|_| "0.0.0.0".to_string());
     let port: u16 = env::var("PORT")
         .ok()
@@ -20,19 +43,19 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .unwrap_or(50051);
     let addr: SocketAddr = format!("{}:{}", host, port).parse()?;
 
-    // Build gRPC Server Reflection service using the compiled descriptor set.
-    // NOTE: build_v1() is the API in tonic-reflection 0.14.
+    // ---------- Reflection (v1) ----------
+    // Requires FILE_DESCRIPTOR_SET exposed from proto module and build.rs generating it.
     let reflection = ReflBuilder::configure()
         .register_encoded_file_descriptor_set(proto::FILE_DESCRIPTOR_SET)
-        .build_v1()
-        .expect("failed to build reflection service"); // docs show v1/v1alpha builders
+        .build_v1()?; // tonic-reflection 0.14 uses build_v1()/build_v1alpha()
 
-    println!("NewsletterService gRPC server listening on {}", addr);
+    info!(message = "Starting gRPC server", %host, %port);
 
-    // Instantiate service implementation
+    // ---------- Service ----------
     let service = MyNewsletterService::default();
 
-    // Build a shutdown future that triggers on Ctrl+C (and SIGTERM on Unix)
+    // ---------- Graceful shutdown ----------
+    // Standard tonic + Tokio signal pattern.
     let shutdown = async {
         let ctrl_c = async {
             tokio::signal::ctrl_c()
@@ -56,15 +79,16 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             _ = sigterm => {},
         }
 
-        println!("Shutdown signal received, stopping gRPC server gracefully...");
+        info!("Shutdown signal received, stopping gRPC server gracefully...");
     };
 
-    // Start gRPC server with reflection and graceful shutdown
-    Server::builder() // tonic::transport::Server builder
-        .add_service(reflection) // reflection service
-        .add_service(NewsletterServiceServer::new(service)) // your gRPC service
-        .serve_with_shutdown(addr, shutdown) // graceful shutdown pattern
-        .await?;
+    // ---------- Server ----------
+    Server::builder()
+        .add_service(reflection)
+        .add_service(NewsletterServiceServer::new(service))
+        .serve_with_shutdown(addr, shutdown)
+        .await?; // let anyhow convert tonic::transport::Error
 
+    info!("Server stopped");
     Ok(())
 }
