@@ -1,4 +1,4 @@
-use std::{env, net::SocketAddr};
+use std::{env, net::SocketAddr, sync::Arc};
 use tonic::transport::Server;
 use tonic_reflection::server::Builder as ReflBuilder;
 
@@ -6,12 +6,16 @@ use infrastructure::db::{build_pool, run_migrations, PgPool};
 use infrastructure::rpc::newsletter::v1::proto::newsletter_service_server::NewsletterServiceServer;
 use infrastructure::rpc::newsletter::v1::{api::MyNewsletterService, proto};
 
-use tracing::{error, info};
+use repository::newsletter::postgres::PostgresNewsletterRepository;
+use service::newsletter::DefaultNewsletterService;
+
+use tracing::info;
 use tracing_subscriber::{fmt, EnvFilter};
 
 mod domain;
 mod infrastructure;
 mod repository;
+mod service;
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
@@ -51,10 +55,18 @@ async fn main() -> anyhow::Result<()> {
 
     info!(message = "Starting gRPC server", %host, %port);
 
-    // ---------- Service ----------
+    // ---------- Dependency Injection Setup ----------
     let pool = build_pool().await?;
     run_migrations().await?;
-    let service = MyNewsletterService::new(pool.clone());
+    
+    // Create repository with dependency injection
+    let repository = Arc::new(PostgresNewsletterRepository::new(pool.clone()));
+    
+    // Create service with dependency injection
+    let newsletter_service = Arc::new(DefaultNewsletterService::new(repository));
+    
+    // Create gRPC service with dependency injection
+    let grpc_service = MyNewsletterService::new(newsletter_service);
 
     // ---------- Graceful shutdown ----------
     // Standard tonic + Tokio signal pattern.
@@ -87,7 +99,7 @@ async fn main() -> anyhow::Result<()> {
     // ---------- Server ----------
     Server::builder()
         .add_service(reflection)
-        .add_service(NewsletterServiceServer::new(service))
+        .add_service(NewsletterServiceServer::new(grpc_service))
         .serve_with_shutdown(addr, shutdown)
         .await?; // let anyhow convert tonic::transport::Error
 

@@ -1,8 +1,8 @@
 use async_trait::async_trait;
 use tonic::{Request, Response, Status};
+use std::sync::Arc;
 
-use crate::infrastructure::db::PgPool;
-use crate::repository::newsletter::postgres as repo;
+use crate::service::newsletter::NewsletterService as NewsletterServiceTrait;
 
 use crate::infrastructure::rpc::newsletter::v1::proto::{
     newsletter_service_server::NewsletterService, DeleteRequest, GetRequest, GetResponse,
@@ -10,13 +10,13 @@ use crate::infrastructure::rpc::newsletter::v1::proto::{
 };
 
 #[derive(Clone)]
-pub struct MyNewsletterService {
-    pool: PgPool,
+pub struct MyNewsletterService<S: NewsletterServiceTrait> {
+    service: Arc<S>,
 }
 
-impl MyNewsletterService {
-    pub fn new(pool: PgPool) -> Self {
-        Self { pool }
+impl<S: NewsletterServiceTrait> MyNewsletterService<S> {
+    pub fn new(service: Arc<S>) -> Self {
+        Self { service }
     }
 
     fn to_proto(n: crate::domain::newsletter::newsletter::Newsletter) -> Newsletter {
@@ -29,40 +29,41 @@ impl MyNewsletterService {
 }
 
 #[async_trait]
-impl NewsletterService for MyNewsletterService {
+impl<S: NewsletterServiceTrait + 'static> NewsletterService for MyNewsletterService<S> {
     async fn get(&self, req: Request<GetRequest>) -> Result<Response<GetResponse>, Status> {
         let email = req.into_inner().email;
 
-        // If you add repo::get_by_email later, switch to it for efficiency.
-        let items = repo::list(&self.pool)
+        let active = self.service
+            .get_subscription_status(&email)
             .await
-            .map_err(|e| Status::internal(format!("db error (list): {e}")))?;
-
-        let active = items.iter().any(|n| n.email == email && n.active);
+            .map_err(|e| Status::internal(format!("service error (get_subscription_status): {e}")))?;
 
         Ok(Response::new(GetResponse { email, active }))
     }
 
     async fn subscribe(&self, req: Request<SubscribeRequest>) -> Result<Response<()>, Status> {
         let email = req.into_inner().email;
-        repo::add(&self.pool, &email)
+        self.service
+            .subscribe(&email)
             .await
-            .map_err(|e| Status::internal(format!("db error (add): {e}")))?;
+            .map_err(|e| Status::internal(format!("service error (subscribe): {e}")))?;
         Ok(Response::new(()))
     }
 
     async fn un_subscribe(&self, req: Request<UnSubscribeRequest>) -> Result<Response<()>, Status> {
         let email = req.into_inner().email;
-        repo::delete(&self.pool, &email)
+        self.service
+            .unsubscribe(&email)
             .await
-            .map_err(|e| Status::internal(format!("db error (delete): {e}")))?;
+            .map_err(|e| Status::internal(format!("service error (unsubscribe): {e}")))?;
         Ok(Response::new(()))
     }
 
     async fn list(&self, _req: Request<()>) -> Result<Response<ListResponse>, Status> {
-        let items = repo::list(&self.pool)
+        let items = self.service
+            .list_newsletters()
             .await
-            .map_err(|e| Status::internal(format!("db error (list): {e}")))?;
+            .map_err(|e| Status::internal(format!("service error (list_newsletters): {e}")))?;
 
         let newsletters: Vec<Newsletter> = items.into_iter().map(Self::to_proto).collect();
         Ok(Response::new(ListResponse { newsletters }))
@@ -74,31 +75,22 @@ impl NewsletterService for MyNewsletterService {
     ) -> Result<Response<()>, Status> {
         let UpdateStatusRequest { emails, active } = req.into_inner();
 
-        if active {
-            // re-subscribe all (ON CONFLICT DO NOTHING in repo::add)
-            for email in emails {
-                repo::add(&self.pool, &email)
-                    .await
-                    .map_err(|e| Status::internal(format!("db error (add): {e}")))?;
-            }
-        } else {
-            // unsubscribe all
-            for email in emails {
-                repo::delete(&self.pool, &email)
-                    .await
-                    .map_err(|e| Status::internal(format!("db error (delete): {e}")))?;
-            }
-        }
+        self.service
+            .update_subscription_status(emails, active)
+            .await
+            .map_err(|e| Status::internal(format!("service error (update_subscription_status): {e}")))?;
 
         Ok(Response::new(()))
     }
 
     async fn delete(&self, req: Request<DeleteRequest>) -> Result<Response<()>, Status> {
-        for email in req.into_inner().emails {
-            repo::delete(&self.pool, &email)
-                .await
-                .map_err(|e| Status::internal(format!("db error (delete): {e}")))?;
-        }
+        let emails = req.into_inner().emails;
+        
+        self.service
+            .delete_subscriptions(emails)
+            .await
+            .map_err(|e| Status::internal(format!("service error (delete_subscriptions): {e}")))?;
+        
         Ok(Response::new(()))
     }
 }
