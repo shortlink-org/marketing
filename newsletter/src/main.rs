@@ -5,9 +5,9 @@ use tonic_reflection::server::Builder as ReflBuilder;
 use infrastructure::db::{build_pool, run_migrations, PgPool};
 use infrastructure::rpc::newsletter::v1::proto::newsletter_service_server::NewsletterServiceServer;
 use infrastructure::rpc::newsletter::v1::{api::MyNewsletterService, proto};
+use infrastructure::logging;
 
-use tracing::{error, info};
-use tracing_subscriber::{fmt, EnvFilter};
+use tracing::info;
 
 mod domain;
 mod infrastructure;
@@ -18,18 +18,8 @@ async fn main() -> anyhow::Result<()> {
     // Load .env (optional)
     dotenv::dotenv().ok();
 
-    // ---------- JSON logging (tracing) ----------
-    // Requires tracing-subscriber features: "fmt", "json", "env-filter".
-    // Example: RUST_LOG=info,hyper=warn
-    let env_filter = EnvFilter::try_from_default_env().unwrap_or_else(|_| EnvFilter::new("info"));
-    fmt()
-        .json() // newline-delimited JSON
-        .flatten_event(true) // put event fields at top-level
-        .with_target(true)
-        .with_file(true)
-        .with_line_number(true)
-        .with_env_filter(env_filter)
-        .init();
+    // ---------- JSON logging with trace-id (tracing) ----------
+    logging::init_tracing()?;
 
     // ---------- DB: pool + migrations ----------
     let _pool: PgPool = build_pool().await?;
