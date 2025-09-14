@@ -2,11 +2,11 @@ version: v2
 modules:
   - path: src
     name: buf.build/shortlink-org/shortlink-newsletter
-deps: []
+deps: [ ]
 lint:
   use:
     - COMMENTS
-    - DEFAULT
+    - STANDARD
   except:
     - ENUM_FIRST_VALUE_ZERO
     - FIELD_NOT_REQUIRED
