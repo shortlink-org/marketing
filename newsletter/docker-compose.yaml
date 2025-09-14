@@ -1,0 +1,20 @@
+include:
+  - path: https://github.com/shortlink-org/gitops.git#main:ops/docker-compose/database/postgres/compose.yaml
+
+networks:
+  simple:
+    name: ${DOCKER_NETWORK}
+    # use the bridge driver, but enable IPv6
+    driver: bridge
+    enable_ipv6: true
+    driver_opts:
+      com.docker.network.enable_ipv6: "true"
+    # Using the ipam you can define a specific CIDR block for the new network, and then,
+    # attaching every container to that network, you can specify its IP address on that range.
+    ipam:
+      driver: default
+      config:
+        - subnet: 10.5.0.0/16
+          gateway: 10.5.0.1
+        - subnet: 2001:0DB8::/112
+          gateway: 2001:0DB8::1

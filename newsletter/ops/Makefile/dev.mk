@@ -6,24 +6,18 @@ include $(ROOT_DIR)/ops/Makefile/docker.mk
 up: ## Run for development mode
 	@COMPOSE_PROFILES=dns,observability,gateway docker compose \
 		-f $(ROOT_DIR)/docker-compose.yaml \
-		-f $(ROOT_DIR)/ops/docker-compose/tooling/services/coredns/coredns.yaml \
-		-f $(ROOT_DIR)/ops/docker-compose/database/postgres/postgres.yaml \
-		-f $(ROOT_DIR)/ops/docker-compose/tooling/observability/grafana/grafana-tempo.yaml \
 		up -d --remove-orphans --build
 
 down: confirm ## Down docker compose
 	@COMPOSE_PROFILES=dns,observability,gateway docker compose \
 		-f $(ROOT_DIR)/docker-compose.yaml \
-		-f $(ROOT_DIR)/ops/docker-compose/tooling/services/coredns/coredns.yaml \
-		-f $(ROOT_DIR)/ops/docker-compose/database/postgres/postgres.yaml \
-		-f $(ROOT_DIR)/ops/docker-compose/tooling/observability/grafana/grafana-tempo.yaml \
 	    down --remove-orphans
 	@docker network prune -f
 
 ### Code style =========================================================================================================
 lint: ## Lint code
 	@cargo fmt
-	@cargo clippy --fix --allow-dirty
+	@cargo clippy --fix --allow-dirty --allow-no-vcs
 
 ### Testing ============================================================================================================
 test: ## Run tests
