@@ -42,9 +42,6 @@ diesel-async = { version = "0.6", features = ["postgres", "bb8"] }
 diesel_migrations = { version = "2.2", features = ["postgres"] }
 chrono = "0.4.42"
 tracing-subscriber = { version = "0.3", features = ["fmt", "json", "env-filter"] }
-tracing-opentelemetry = "0.26"
-opentelemetry = { version = "0.26", features = ["trace"] }
-opentelemetry_sdk = { version = "0.26", features = ["trace", "rt-tokio"] }
 anyhow = "1.0.99"
 
 [dependencies.uuid]
