@@ -153,9 +153,9 @@ setuptools==80.9.0 \
 SQLAlchemy==2.0.43 \
     --hash=sha256:788bfcef6787a7764169cfe9859fe425bf44559619e1d9f56f5bddf2ebf6f417
     # via referral (pyproject.toml)
-testcontainers==4.12.0 \
-    --hash=sha256:13ee89cae995e643f225665aad8b200b25c4f219944a6f9c0b03249ec3f31b8d \
-    --hash=sha256:26caef57e642d5e8c5fcc593881cf7df3ab0f0dc9170fad22765b184e226ab15
+testcontainers==4.13.0 \
+    --hash=sha256:784292e0a3f3a4588fbbf5d6649adda81fea5fd61ad3dc73f50a7a903904aade \
+    --hash=sha256:ee2bc39324eeeeb710be779208ae070c8373fa9058861859203f536844b0f412
     # via referral (pyproject.toml)
 uvicorn==0.35.0 \
     --hash=sha256:197535216b25ff9b785e29a0b79199f55222193d47f820816e7da751e9bc8d4a \
