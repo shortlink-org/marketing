@@ -1,16 +1,12 @@
 use crate::domain::newsletter::newsletter::Newsletter;
 use crate::infrastructure::db::db_schema::newsletters;
 use crate::infrastructure::db::PgPool;
-use crate::infrastructure::logging::{TraceContext, log_crud_start, log_crud_success, log_crud_error};
 
 use anyhow::Result;
 use diesel::prelude::*;
 use diesel::SelectableHelper;
-// <- for .as_select()
 use diesel_async::RunQueryDsl;
-use serde_json::json;
-use std::collections::HashMap;
-// <- async query DSL
+use tracing::{info, error, instrument};
 
 #[derive(Debug, Clone, Queryable, Selectable)]
 #[diesel(table_name = newsletters)]
@@ -30,43 +26,33 @@ struct NewNewsletter<'a> {
     pub active: bool,
 }
 
+#[instrument(skip(pool))]
 pub async fn list(pool: &PgPool) -> Result<Vec<Newsletter>> {
-    list_with_trace(pool, None).await
-}
-
-pub async fn list_with_trace(pool: &PgPool, trace_ctx: Option<&TraceContext>) -> Result<Vec<Newsletter>> {
-    if let Some(ctx) = trace_ctx {
-        log_crud_start(ctx, "READ", "newsletter_table", None);
-    }
+    info!(entity = "newsletter_table", crud_operation = "READ", "Starting database list operation");
 
     let mut conn = match pool.get().await {
-        Ok(conn) => conn,
+        Ok(conn) => {
+            info!(entity = "newsletter_table", "Successfully acquired database connection");
+            conn
+        }
         Err(e) => {
-            if let Some(ctx) = trace_ctx {
-                log_crud_error(ctx, "READ", "newsletter_table", &e.to_string(), None);
-            }
+            error!(entity = "newsletter_table", error = %e, "Failed to acquire database connection");
             return Err(e.into());
         }
     };
 
     let rows: Vec<NewsletterRow> = match newsletters::table
-        .select(NewsletterRow::as_select()) // requires SelectableHelper
+        .select(NewsletterRow::as_select())
         .order(newsletters::id.desc())
         .load(&mut conn)
         .await
     {
         Ok(rows) => {
-            if let Some(ctx) = trace_ctx {
-                let mut details = HashMap::new();
-                details.insert("rows_count".to_string(), json!(rows.len()));
-                log_crud_success(ctx, "READ", "newsletter_table", Some(details));
-            }
+            info!(entity = "newsletter_table", crud_operation = "READ", rows_count = rows.len(), "Successfully retrieved newsletters from database");
             rows
         }
         Err(e) => {
-            if let Some(ctx) = trace_ctx {
-                log_crud_error(ctx, "READ", "newsletter_table", &e.to_string(), None);
-            }
+            error!(entity = "newsletter_table", crud_operation = "READ", error = %e, "Failed to retrieve newsletters from database");
             return Err(e.into());
         }
     };
@@ -80,25 +66,17 @@ pub async fn list_with_trace(pool: &PgPool, trace_ctx: Option<&TraceContext>) ->
         .collect())
 }
 
+#[instrument(skip(pool), fields(email = %email))]
 pub async fn add(pool: &PgPool, email: &str) -> Result<()> {
-    add_with_trace(pool, email, None).await
-}
-
-pub async fn add_with_trace(pool: &PgPool, email: &str, trace_ctx: Option<&TraceContext>) -> Result<()> {
-    if let Some(ctx) = trace_ctx {
-        let mut details = HashMap::new();
-        details.insert("email".to_string(), json!(email));
-        log_crud_start(ctx, "CREATE", "newsletter_table", Some(details));
-    }
+    info!(entity = "newsletter_table", crud_operation = "CREATE", email = %email, "Starting database add operation");
 
     let mut conn = match pool.get().await {
-        Ok(conn) => conn,
+        Ok(conn) => {
+            info!(entity = "newsletter_table", email = %email, "Successfully acquired database connection");
+            conn
+        }
         Err(e) => {
-            if let Some(ctx) = trace_ctx {
-                let mut details = HashMap::new();
-                details.insert("email".to_string(), json!(email));
-                log_crud_error(ctx, "CREATE", "newsletter_table", &e.to_string(), Some(details));
-            }
+            error!(entity = "newsletter_table", crud_operation = "CREATE", email = %email, error = %e, "Failed to acquire database connection");
             return Err(e.into());
         }
     };
@@ -114,43 +92,27 @@ pub async fn add_with_trace(pool: &PgPool, email: &str, trace_ctx: Option<&Trace
         .await
     {
         Ok(_) => {
-            if let Some(ctx) = trace_ctx {
-                let mut details = HashMap::new();
-                details.insert("email".to_string(), json!(email));
-                log_crud_success(ctx, "CREATE", "newsletter_table", Some(details));
-            }
+            info!(entity = "newsletter_table", crud_operation = "CREATE", email = %email, "Successfully added newsletter to database");
             Ok(())
         }
         Err(e) => {
-            if let Some(ctx) = trace_ctx {
-                let mut details = HashMap::new();
-                details.insert("email".to_string(), json!(email));
-                log_crud_error(ctx, "CREATE", "newsletter_table", &e.to_string(), Some(details));
-            }
+            error!(entity = "newsletter_table", crud_operation = "CREATE", email = %email, error = %e, "Failed to add newsletter to database");
             Err(e.into())
         }
     }
 }
 
+#[instrument(skip(pool), fields(email = %email))]
 pub async fn delete(pool: &PgPool, email: &str) -> Result<()> {
-    delete_with_trace(pool, email, None).await
-}
-
-pub async fn delete_with_trace(pool: &PgPool, email: &str, trace_ctx: Option<&TraceContext>) -> Result<()> {
-    if let Some(ctx) = trace_ctx {
-        let mut details = HashMap::new();
-        details.insert("email".to_string(), json!(email));
-        log_crud_start(ctx, "DELETE", "newsletter_table", Some(details));
-    }
+    info!(entity = "newsletter_table", crud_operation = "DELETE", email = %email, "Starting database delete operation");
 
     let mut conn = match pool.get().await {
-        Ok(conn) => conn,
+        Ok(conn) => {
+            info!(entity = "newsletter_table", email = %email, "Successfully acquired database connection");
+            conn
+        }
         Err(e) => {
-            if let Some(ctx) = trace_ctx {
-                let mut details = HashMap::new();
-                details.insert("email".to_string(), json!(email));
-                log_crud_error(ctx, "DELETE", "newsletter_table", &e.to_string(), Some(details));
-            }
+            error!(entity = "newsletter_table", crud_operation = "DELETE", email = %email, error = %e, "Failed to acquire database connection");
             return Err(e.into());
         }
     };
@@ -160,20 +122,11 @@ pub async fn delete_with_trace(pool: &PgPool, email: &str, trace_ctx: Option<&Tr
         .await
     {
         Ok(rows_affected) => {
-            if let Some(ctx) = trace_ctx {
-                let mut details = HashMap::new();
-                details.insert("email".to_string(), json!(email));
-                details.insert("rows_affected".to_string(), json!(rows_affected));
-                log_crud_success(ctx, "DELETE", "newsletter_table", Some(details));
-            }
+            info!(entity = "newsletter_table", crud_operation = "DELETE", email = %email, rows_affected = rows_affected, "Successfully deleted newsletter from database");
             Ok(())
         }
         Err(e) => {
-            if let Some(ctx) = trace_ctx {
-                let mut details = HashMap::new();
-                details.insert("email".to_string(), json!(email));
-                log_crud_error(ctx, "DELETE", "newsletter_table", &e.to_string(), Some(details));
-            }
+            error!(entity = "newsletter_table", crud_operation = "DELETE", email = %email, error = %e, "Failed to delete newsletter from database");
             Err(e.into())
         }
     }
