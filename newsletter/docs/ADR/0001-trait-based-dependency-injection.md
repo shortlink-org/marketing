@@ -225,19 +225,6 @@ Success will be measured by:
 4. **Developer Productivity**: Reduced time for feature implementation
 5. **Bug Reduction**: Fewer production issues related to data access
 
-## Migration Path
-
-1. **Phase 1**: Implement traits and new implementations alongside existing code
-2. **Phase 2**: Update gRPC layer to use new service layer
-3. **Phase 3**: Migrate main.rs to use dependency injection
-4. **Phase 4**: Mark old direct database functions as deprecated
-5. **Phase 5**: Remove deprecated code after validation period
-
-## Related ADRs
-
-- ADR-0002: Database Connection Pool Management (Future)
-- ADR-0003: Error Handling Strategy (Future)
-- ADR-0004: Testing Strategy for Microservices (Future)
 
 ## References
 
