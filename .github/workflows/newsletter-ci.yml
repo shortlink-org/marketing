@@ -1,0 +1,219 @@
+name: Newsletter Service CI
+
+on:
+  push:
+    branches: [ main, master, develop ]
+    paths:
+      - 'newsletter/**'
+      - '.github/workflows/newsletter-ci.yml'
+  pull_request:
+    branches: [ main, master, develop ]
+    paths:
+      - 'newsletter/**'
+      - '.github/workflows/newsletter-ci.yml'
+
+env:
+  CARGO_TERM_COLOR: always
+  RUST_BACKTRACE: 1
+
+jobs:
+  test:
+    name: Test Newsletter Service
+    runs-on: ubuntu-latest
+    
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: newsletter_test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Install Rust
+      uses: dtolnay/rust-toolchain@stable
+      with:
+        toolchain: 1.82
+        components: rustfmt, clippy
+
+    - name: Cache Cargo dependencies
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.cargo/bin/
+          ~/.cargo/registry/index/
+          ~/.cargo/registry/cache/
+          ~/.cargo/git/db/
+          newsletter/target/
+        key: ${{ runner.os }}-cargo-${{ hashFiles('newsletter/Cargo.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-cargo-
+
+    - name: Install system dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y libpq-dev protobuf-compiler
+
+    - name: Check formatting
+      working-directory: ./newsletter
+      run: cargo fmt --all -- --check
+
+    - name: Run Clippy
+      working-directory: ./newsletter
+      run: cargo clippy --all-targets --all-features -- -D warnings
+
+    - name: Build
+      working-directory: ./newsletter
+      run: cargo build --verbose
+
+    - name: Run unit tests
+      working-directory: ./newsletter
+      run: cargo test --lib --bins
+      env:
+        DATABASE_URL: postgres://postgres:postgres@localhost:5432/newsletter_test
+
+    - name: Run integration tests
+      working-directory: ./newsletter
+      run: cargo test --test cucumber_simple
+      env:
+        DATABASE_URL: postgres://postgres:postgres@localhost:5432/newsletter_test
+
+    - name: Run cucumber expressions tests
+      working-directory: ./newsletter
+      run: cargo test --test cucumber_expressions
+      env:
+        DATABASE_URL: postgres://postgres:postgres@localhost:5432/newsletter_test
+
+    - name: Generate test coverage report
+      working-directory: ./newsletter
+      run: |
+        cargo install cargo-tarpaulin
+        cargo tarpaulin --out xml --output-dir ./coverage
+      env:
+        DATABASE_URL: postgres://postgres:postgres@localhost:5432/newsletter_test
+
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v4
+      with:
+        file: ./newsletter/coverage/cobertura.xml
+        directory: ./newsletter
+        flags: newsletter
+        name: newsletter-coverage
+        fail_ci_if_error: false
+
+  docker-build:
+    name: Docker Build Test
+    runs-on: ubuntu-latest
+    needs: test
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Build Docker image
+      working-directory: ./newsletter
+      run: |
+        docker build -t newsletter:test .
+
+  security-audit:
+    name: Security Audit
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Install Rust
+      uses: dtolnay/rust-toolchain@stable
+      with:
+        toolchain: 1.82
+
+    - name: Install cargo-audit
+      run: cargo install cargo-audit
+
+    - name: Run security audit
+      working-directory: ./newsletter
+      run: cargo audit
+
+  benchmark:
+    name: Performance Benchmarks
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: newsletter_test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Install Rust
+      uses: dtolnay/rust-toolchain@stable
+      with:
+        toolchain: 1.82
+
+    - name: Install system dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y libpq-dev protobuf-compiler
+
+    - name: Run benchmarks
+      working-directory: ./newsletter
+      run: cargo bench
+      env:
+        DATABASE_URL: postgres://postgres:postgres@localhost:5432/newsletter_test
+
+  deploy-staging:
+    name: Deploy to Staging
+    runs-on: ubuntu-latest
+    needs: [test, docker-build, security-audit]
+    if: github.ref == 'refs/heads/develop'
+    environment: staging
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Deploy to staging
+      run: |
+        echo "Deploying newsletter service to staging environment"
+        # Add your deployment commands here
+
+  deploy-production:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    needs: [test, docker-build, security-audit]
+    if: github.ref == 'refs/heads/main'
+    environment: production
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Deploy to production
+      run: |
+        echo "Deploying newsletter service to production environment"
+        # Add your deployment commands here

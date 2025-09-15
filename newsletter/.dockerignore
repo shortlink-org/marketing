@@ -1,0 +1,43 @@
+# Ignore target directory except for the final binary
+target/
+!target/release/newsletter
+
+# Ignore test files
+tests/
+*.feature
+
+# Ignore development files
+.env
+.env.local
+docker-compose.yaml
+Makefile
+ops/
+
+# Ignore documentation
+README.md
+docs/
+
+# Ignore Git
+.git/
+.gitignore
+
+# Ignore IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Ignore OS files
+.DS_Store
+Thumbs.db
+
+# Ignore temporary files
+*.tmp
+*.temp
+*.log
+
+# Ignore coverage reports
+coverage/
+*.profraw
+*.gcda
+*.gcno
