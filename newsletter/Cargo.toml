@@ -3,7 +3,7 @@ cargo-features = []
 [package]
 name = "newsletter"
 version = "0.1.0"
-rust-version = "1.82"
+rust-version = "1.89"
 authors = ["Login Victor <batazor111@gmail.com>"]
 keywords = ["newsletter"]
 readme = "README.md"
@@ -54,6 +54,7 @@ anyhow = "1.0.99"
 
 [dev-dependencies]
 cucumber = "0.21"
+cucumber-expressions = "0.3"
 tokio-test = "0.4"
 
 [dependencies.uuid]
