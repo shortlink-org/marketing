@@ -1,4 +1,4 @@
-use crate::domain::newsletter::newsletter::Newsletter;
+use crate::domain::newsletter::Newsletter;
 use crate::infrastructure::db::db_schema::newsletters;
 use crate::infrastructure::db::PgPool;
 
@@ -12,9 +12,11 @@ use tracing::{info, error, instrument};
 #[diesel(table_name = newsletters)]
 #[diesel(check_for_backend(diesel::pg::Pg))] // optional: extra compile-time checks
 struct NewsletterRow {
+    #[allow(dead_code)]
     pub id: i64,
     pub email: String,
     pub active: bool,
+    #[allow(dead_code)]
     pub created_at: chrono::DateTime<chrono::Utc>,
 }
 
