@@ -99,17 +99,18 @@ impl<S: NewsletterServiceTrait + 'static> NewsletterService for MyNewsletterServ
         Span::current().record("trace_id", &trace_id);
         
         let email = req.into_inner().email;
+<<<<<<< HEAD
 
         info!(operation = "unsubscribe", crud_operation = "DELETE", entity = "newsletter", email = %email, "Starting unsubscribe operation");
 
-        match self.service.unsubscribe(&email).await {
+        match repo::delete(&self.pool, &email).await {
             Ok(_) => {
                 info!(operation = "unsubscribe", crud_operation = "DELETE", entity = "newsletter", email = %email, "Successfully unsubscribed from newsletter");
                 Ok(Response::new(()))
             }
             Err(e) => {
                 error!(operation = "unsubscribe", crud_operation = "DELETE", entity = "newsletter", email = %email, error = %e, "Failed to unsubscribe from newsletter");
-                Err(Status::internal(format!("service error (unsubscribe): {e}")))
+                Err(Status::internal(format!("db error (delete): {e}")))
             }
         }
     }
@@ -126,19 +127,32 @@ impl<S: NewsletterServiceTrait + 'static> NewsletterService for MyNewsletterServ
 
         info!(operation = "list", crud_operation = "READ", entity = "newsletter", "Starting list operation");
 
-        let items = match self.service.list_newsletters().await {
+        let items = match repo::list(&self.pool).await {
             Ok(items) => {
                 info!(operation = "list", crud_operation = "READ", entity = "newsletter", count = items.len(), "Successfully retrieved newsletter list");
                 items
             }
             Err(e) => {
                 error!(operation = "list", crud_operation = "READ", entity = "newsletter", error = %e, "Failed to retrieve newsletter list");
-                return Err(Status::internal(format!("service error (list_newsletters): {e}")));
+                return Err(Status::internal(format!("db error (list): {e}")));
             }
         };
+=======
+        self.service
+            .unsubscribe(&email)
+            .await
+            .map_err(|e| Status::internal(format!("service error (unsubscribe): {e}")))?;
+        Ok(Response::new(()))
+    }
+
+    async fn list(&self, _req: Request<()>) -> Result<Response<ListResponse>, Status> {
+        let items = self.service
+            .list_newsletters()
+            .await
+            .map_err(|e| Status::internal(format!("service error (list_newsletters): {e}")))?;
+>>>>>>> cursor/implement-trait-based-injection-for-newsletter-3e79
 
         let newsletters: Vec<Newsletter> = items.into_iter().map(Self::to_proto).collect();
-
         Ok(Response::new(ListResponse { newsletters }))
     }
 
@@ -157,24 +171,41 @@ impl<S: NewsletterServiceTrait + 'static> NewsletterService for MyNewsletterServ
         
         let UpdateStatusRequest { emails, active } = req.into_inner();
 
+<<<<<<< HEAD
         let operation = if active { "UPDATE_ACTIVATE" } else { "UPDATE_DEACTIVATE" };
-
         info!(operation = "update_status", crud_operation = operation, entity = "newsletter", count = emails.len(), active = active, "Starting bulk update status operation");
 
-        match self.service.update_subscription_status(emails.clone(), active).await {
-            Ok(_) => {
-                info!(operation = "update_status", crud_operation = operation, entity = "newsletter", count = emails.len(), active = active, "Successfully completed bulk update status operation");
-                Ok(Response::new(()))
+        if active {
+            // re-subscribe all (ON CONFLICT DO NOTHING in repo::add)
+            for email in &emails {
+                if let Err(e) = repo::add(&self.pool, email).await {
+                    error!(operation = "update_status", crud_operation = operation, entity = "newsletter", email = %email, error = %e, "Failed to activate subscription");
+                    return Err(Status::internal(format!("db error (add): {e}")));
+                }
             }
-            Err(e) => {
-                error!(operation = "update_status", crud_operation = operation, entity = "newsletter", count = emails.len(), active = active, error = %e, "Failed to complete bulk update status operation");
-                Err(Status::internal(format!("service error (update_subscription_status): {e}")))
+        } else {
+            // unsubscribe all
+            for email in &emails {
+                if let Err(e) = repo::delete(&self.pool, email).await {
+                    error!(operation = "update_status", crud_operation = operation, entity = "newsletter", email = %email, error = %e, "Failed to deactivate subscription");
+                    return Err(Status::internal(format!("db error (delete): {e}")));
+                }
             }
         }
+=======
+        self.service
+            .update_subscription_status(emails, active)
+            .await
+            .map_err(|e| Status::internal(format!("service error (update_subscription_status): {e}")))?;
+>>>>>>> cursor/implement-trait-based-injection-for-newsletter-3e79
+
+        info!(operation = "update_status", crud_operation = operation, entity = "newsletter", count = emails.len(), active = active, "Successfully completed bulk update status operation");
+        Ok(Response::new(()))
     }
 
     #[instrument(skip(self), fields(emails = ?req.get_ref().emails, trace_id))]
     async fn delete(&self, req: Request<DeleteRequest>) -> Result<Response<()>, Status> {
+<<<<<<< HEAD
         // Set trace_id from header or generate new one
         let trace_id = if let Some(trace_id) = logging::extract_trace_id_from_request(&req) {
             trace_id
@@ -187,15 +218,23 @@ impl<S: NewsletterServiceTrait + 'static> NewsletterService for MyNewsletterServ
 
         info!(operation = "delete", crud_operation = "DELETE", entity = "newsletter", count = emails.len(), "Starting bulk delete operation");
 
-        match self.service.delete_subscriptions(emails.clone()).await {
-            Ok(_) => {
-                info!(operation = "delete", crud_operation = "DELETE", entity = "newsletter", count = emails.len(), "Successfully completed bulk delete operation");
-                Ok(Response::new(()))
-            }
-            Err(e) => {
-                error!(operation = "delete", crud_operation = "DELETE", entity = "newsletter", count = emails.len(), error = %e, "Failed to complete bulk delete operation");
-                Err(Status::internal(format!("service error (delete_subscriptions): {e}")))
+        for email in &emails {
+            if let Err(e) = repo::delete(&self.pool, email).await {
+                error!(operation = "delete", crud_operation = "DELETE", entity = "newsletter", email = %email, error = %e, "Failed to delete subscription");
+                return Err(Status::internal(format!("db error (delete): {e}")));
             }
         }
+
+        info!(operation = "delete", crud_operation = "DELETE", entity = "newsletter", count = emails.len(), "Successfully completed bulk delete operation");
+=======
+        let emails = req.into_inner().emails;
+        
+        self.service
+            .delete_subscriptions(emails)
+            .await
+            .map_err(|e| Status::internal(format!("service error (delete_subscriptions): {e}")))?;
+        
+>>>>>>> cursor/implement-trait-based-injection-for-newsletter-3e79
+        Ok(Response::new(()))
     }
 }
