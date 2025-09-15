@@ -3,7 +3,7 @@ use std::collections::HashMap;
 
 // Simple in-memory newsletter store for testing
 #[derive(Debug, Clone)]
-struct Newsletter {
+pub struct Newsletter {
     pub email: String,
     pub active: bool,
 }

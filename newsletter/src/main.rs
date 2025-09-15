@@ -6,7 +6,7 @@ use infrastructure::db::{build_pool, run_migrations, PgPool};
 use infrastructure::rpc::newsletter::v1::proto::newsletter_service_server::NewsletterServiceServer;
 use infrastructure::rpc::newsletter::v1::{api::MyNewsletterService, proto};
 
-use tracing::{error, info};
+use tracing::info;
 use tracing_subscriber::{fmt, EnvFilter};
 
 mod domain;
