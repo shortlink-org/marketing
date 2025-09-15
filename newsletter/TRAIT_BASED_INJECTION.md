@@ -107,6 +107,23 @@ let service = Arc::new(DefaultNewsletterService::new(repository));
 let grpc_service = MyNewsletterService::new(service);
 ```
 
+### Built-in Demo Functionality
+The service includes a built-in `demo_functionality` method that showcases the trait-based dependency injection:
+
+```rust
+// Call the demo through the service layer
+let demo_result = service.demo_functionality("test@example.com").await?;
+println!("{}", demo_result);
+```
+
+Or via gRPC:
+```bash
+# Using grpcurl to call the demo endpoint
+grpcurl -plaintext -d '{"test_email": "demo@example.com"}' \
+  localhost:50051 \
+  infrastructure.rpc.newsletter.v1.NewsletterService/Demo
+```
+
 ### Testing with Mock
 ```rust
 // Create a mock repository for testing

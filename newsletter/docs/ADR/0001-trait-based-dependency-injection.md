@@ -77,6 +77,11 @@ We will implement **Trait-Based Dependency Injection** using Rust's trait system
    - Wire dependencies in `main.rs` using constructor injection
    - Leverage Rust's type system for compile-time dependency validation
 
+5. **Built-in Demonstration**
+   - Include `demo_functionality` method in service trait
+   - Expose demo via gRPC endpoint for live testing
+   - Showcase dependency injection in action
+
 ## Consequences
 
 ### Positive
@@ -168,6 +173,7 @@ pub trait NewsletterService: Send + Sync {
     async fn get_subscription_status(&self, email: &str) -> Result<bool>;
     async fn update_subscription_status(&self, emails: Vec<String>, active: bool) -> Result<()>;
     async fn delete_subscriptions(&self, emails: Vec<String>) -> Result<()>;
+    async fn demo_functionality(&self, test_email: &str) -> Result<String>;
 }
 ```
 

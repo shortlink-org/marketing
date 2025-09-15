@@ -5,8 +5,9 @@ use std::sync::Arc;
 use crate::service::newsletter::NewsletterService as NewsletterServiceTrait;
 
 use crate::infrastructure::rpc::newsletter::v1::proto::{
-    newsletter_service_server::NewsletterService, DeleteRequest, GetRequest, GetResponse,
-    ListResponse, Newsletter, SubscribeRequest, UnSubscribeRequest, UpdateStatusRequest,
+    newsletter_service_server::NewsletterService, DeleteRequest, DemoRequest, DemoResponse, 
+    GetRequest, GetResponse, ListResponse, Newsletter, SubscribeRequest, UnSubscribeRequest, 
+    UpdateStatusRequest,
 };
 
 #[derive(Clone)]
@@ -92,5 +93,32 @@ impl<S: NewsletterServiceTrait + 'static> NewsletterService for MyNewsletterServ
             .map_err(|e| Status::internal(format!("service error (delete_subscriptions): {e}")))?;
         
         Ok(Response::new(()))
+    }
+
+    async fn demo(&self, req: Request<DemoRequest>) -> Result<Response<DemoResponse>, Status> {
+        let test_email = req.into_inner().test_email;
+        
+        // Use a default email if none provided
+        let email_to_use = if test_email.trim().is_empty() {
+            "demo@example.com"
+        } else {
+            &test_email
+        };
+        
+        match self.service.demo_functionality(email_to_use).await {
+            Ok(demo_log) => {
+                Ok(Response::new(DemoResponse {
+                    demo_log,
+                    success: true,
+                }))
+            },
+            Err(e) => {
+                let error_log = format!("Demo failed: {}\n\nThis demonstrates error handling in the trait-based dependency injection system.", e);
+                Ok(Response::new(DemoResponse {
+                    demo_log: error_log,
+                    success: false,
+                }))
+            }
+        }
     }
 }

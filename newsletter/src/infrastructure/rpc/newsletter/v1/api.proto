@@ -21,6 +21,9 @@ service NewsletterService {
   rpc UpdateStatus(UpdateStatusRequest) returns (google.protobuf.Empty) {}
   // Delete deletes multiple newsletters, either soft or hard delete.
   rpc Delete(DeleteRequest) returns (google.protobuf.Empty) {}
+  
+  // Demo demonstrates the trait-based dependency injection functionality.
+  rpc Demo(DemoRequest) returns (DemoResponse) {}
 }
 
 // GetRequest is the request message containing the user's email.
@@ -79,4 +82,18 @@ enum DeleteType {
   DELETE_TYPE_SOFT_DELETE = 1;
   // Hard delete, permanently removing the newsletter.
   DELETE_TYPE_HARD_DELETE = 2;
+}
+
+// DemoRequest is the request message for demonstrating trait-based dependency injection.
+message DemoRequest {
+  // Test email to use in the demonstration.
+  string test_email = 1;
+}
+
+// DemoResponse is the response message containing the demonstration log.
+message DemoResponse {
+  // Log output from the demonstration.
+  string demo_log = 1;
+  // Whether the demonstration completed successfully.
+  bool success = 2;
 }
