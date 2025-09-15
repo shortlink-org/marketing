@@ -20,5 +20,18 @@ lint: ## Lint code
 	@cargo clippy --fix --allow-dirty --allow-no-vcs
 
 ### Testing ============================================================================================================
-test: ## Run tests
+test: ## Run all tests
 	@cargo test
+
+test-unit: ## Run unit tests only
+	@cargo test --lib --bins
+
+test-cucumber: ## Run cucumber tests
+	@cargo test --test cucumber_simple
+	@cargo test --test cucumber_expressions
+
+test-integration: ## Run integration tests
+	@cargo test --test cucumber_simple --test cucumber_expressions
+
+test-coverage: ## Generate test coverage report
+	@cargo tarpaulin --out html --output-dir ./coverage
