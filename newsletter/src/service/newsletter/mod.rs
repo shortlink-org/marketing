@@ -25,10 +25,6 @@ pub trait NewsletterService: Send + Sync {
     
     /// Delete multiple newsletter subscriptions
     async fn delete_subscriptions(&self, emails: Vec<String>) -> Result<()>;
-    
-    /// Demonstrate the trait-based dependency injection functionality
-    /// This method showcases how the service layer uses the injected repository
-    async fn demo_functionality(&self, test_email: &str) -> Result<String>;
 }
 
 /// Default implementation of the newsletter service
@@ -96,63 +92,5 @@ impl<R: NewsletterRepository + 'static> NewsletterService for DefaultNewsletterS
             self.repository.delete(&email).await?;
         }
         Ok(())
-    }
-    
-    async fn demo_functionality(&self, test_email: &str) -> Result<String> {
-        let mut demo_log = String::new();
-        demo_log.push_str("=== Trait-Based Dependency Injection Demo ===\n");
-        
-        // Step 1: Subscribe a test email
-        demo_log.push_str(&format!("1. Subscribing {}...\n", test_email));
-        match self.subscribe(test_email).await {
-            Ok(_) => demo_log.push_str("   ✓ Successfully subscribed\n"),
-            Err(e) => demo_log.push_str(&format!("   ✗ Failed to subscribe: {}\n", e)),
-        }
-        
-        // Step 2: Check subscription status
-        demo_log.push_str("2. Checking subscription status...\n");
-        match self.get_subscription_status(test_email).await {
-            Ok(status) => demo_log.push_str(&format!("   ✓ Subscription status: {}\n", status)),
-            Err(e) => demo_log.push_str(&format!("   ✗ Failed to check status: {}\n", e)),
-        }
-        
-        // Step 3: List all newsletters
-        demo_log.push_str("3. Listing all newsletters...\n");
-        match self.list_newsletters().await {
-            Ok(newsletters) => {
-                demo_log.push_str(&format!("   ✓ Found {} newsletters\n", newsletters.len()));
-                for newsletter in newsletters.iter().take(3) {
-                    demo_log.push_str(&format!("   - {}: {}\n", newsletter.email, 
-                        if newsletter.active { "active" } else { "inactive" }));
-                }
-                if newsletters.len() > 3 {
-                    demo_log.push_str(&format!("   ... and {} more\n", newsletters.len() - 3));
-                }
-            },
-            Err(e) => demo_log.push_str(&format!("   ✗ Failed to list newsletters: {}\n", e)),
-        }
-        
-        // Step 4: Unsubscribe
-        demo_log.push_str("4. Unsubscribing test email...\n");
-        match self.unsubscribe(test_email).await {
-            Ok(_) => demo_log.push_str("   ✓ Successfully unsubscribed\n"),
-            Err(e) => demo_log.push_str(&format!("   ✗ Failed to unsubscribe: {}\n", e)),
-        }
-        
-        // Step 5: Verify unsubscription
-        demo_log.push_str("5. Verifying unsubscription...\n");
-        match self.get_subscription_status(test_email).await {
-            Ok(status) => demo_log.push_str(&format!("   ✓ Final status: {}\n", status)),
-            Err(e) => demo_log.push_str(&format!("   ✗ Failed to verify: {}\n", e)),
-        }
-        
-        demo_log.push_str("=== Demo Complete ===\n");
-        demo_log.push_str("This demo showcases:\n");
-        demo_log.push_str("- Service layer using injected repository trait\n");
-        demo_log.push_str("- Business logic validation and error handling\n");
-        demo_log.push_str("- Clean separation of concerns\n");
-        demo_log.push_str("- Type-safe dependency injection\n");
-        
-        Ok(demo_log)
     }
 }
