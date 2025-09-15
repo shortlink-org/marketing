@@ -1,0 +1,52 @@
+name: Rust - Lint (fmt + clippy)
+
+on:
+  push:
+    paths:
+      - 'newsletter/**'
+      - '.github/workflows/rust-lint.yml'
+  pull_request:
+    paths:
+      - 'newsletter/**'
+      - '.github/workflows/rust-lint.yml'
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: newsletter
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y pkg-config libssl-dev libpq-dev protobuf-compiler
+
+      - name: Setup Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+          override: true
+          components: clippy, rustfmt
+
+      - name: Cache cargo registry
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: ${{ runner.os }}-cargo-lint-${{ hashFiles('newsletter/Cargo.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-lint-
+
+      - name: rustfmt
+        run: cargo fmt --all -- --check
+
+      - name: clippy
+        run: cargo clippy --all-targets --all-features -- -D warnings
+
