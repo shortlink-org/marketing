@@ -1,1 +1,7 @@
-pub mod newsletter;
+use serde::{Deserialize, Serialize};
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct Newsletter {
+    pub email: String,
+    pub active: bool,
+}

@@ -21,7 +21,7 @@ impl MyNewsletterService {
         Self { pool }
     }
 
-    fn to_proto(n: crate::domain::newsletter::newsletter::Newsletter) -> Newsletter {
+    fn to_proto(n: crate::domain::newsletter::Newsletter) -> Newsletter {
         Newsletter {
             field_mask: None,
             email: n.email,
