@@ -10,3 +10,4 @@ spec:
         allowTags: "main"
     - git:
         repoURL: https://github.com/shortlink-org/marketing.git
+        branch: main
