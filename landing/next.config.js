@@ -73,9 +73,15 @@ const nextConfig = {
   experimental: {
     webVitalsAttribution: ['CLS', 'FCP', 'FID', 'INP', 'LCP', 'TTFB'],
     clientTraceMetadata: ['sentry-trace', 'baggage'],
-    // reactCompiler: true,
-    // typedRoutes: true,
+    cssChunking: true,
+    reactCompiler: true,
+    typedRoutes: true,
+    viewTransition: true,
   },
+  allowedDevOrigins: [
+      '127.0.0.1',
+      'localhost',
+  ],
 }
 
 module.exports = nextConfig
