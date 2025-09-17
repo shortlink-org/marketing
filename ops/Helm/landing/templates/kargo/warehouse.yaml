@@ -6,8 +6,7 @@ spec:
   subscriptions:
     - image:
         repoURL: registry.gitlab.com/shortlink-org/marketing/landing
-        imageSelectionStrategy: Lexical
-        allowTags: "main"
+        imageSelectionStrategy: NewestBuild
     - git:
         repoURL: https://github.com/shortlink-org/marketing.git
         branch: main
