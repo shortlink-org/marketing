@@ -46,7 +46,7 @@ tonic-health = "0.14"
 tonic-reflection = { version = "0.14", features = ["server"] }
 tracing = { version = "0.1", features = ["attributes"] }
 diesel = { version = "2.2", features = ["postgres", "chrono", "uuid", "serde_json"] }
-diesel-async = { version = "0.5", features = ["postgres", "bb8"] }
+diesel-async = { version = "0.6", features = ["postgres", "bb8"] }
 diesel_migrations = { version = "2.2", features = ["postgres"] }
 chrono = "0.4.42"
 tracing-subscriber = { version = "0.3", features = ["fmt", "json", "env-filter"] }
