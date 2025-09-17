@@ -1,0 +1,21 @@
+apiVersion: kargo.akuity.io/v1alpha1
+kind: Stage
+metadata:
+  name: landing-stage
+  namespace: marketing
+spec:
+  vars:
+    - name: gitopsRepo
+      value: https://github.com/shortlink-org/marketing.git
+    - name: targetBranch
+      value: main
+    - name: imageRepo
+      value: registry.gitlab.com/shortlink-org/marketing/landing
+  requestedFreight:
+    - origin:
+        kind: Warehouse
+        name: marketing-landing
+      sources:
+        stages:
+          - staging
+          - production
