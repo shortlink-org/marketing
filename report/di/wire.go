@@ -43,7 +43,6 @@ func NewReportService(
 	// Common
 	log logger.Logger,
 	config *config.Config,
-	autoMaxProcsOption autoMaxPro.AutoMaxPro,
 
 	// Observability
 	monitoring *monitoring.Monitoring,
@@ -59,7 +58,6 @@ func NewReportService(
 		Tracer:        tracer,
 		Monitoring:    monitoring,
 		PprofEndpoint: pprofHTTP,
-		AutoMaxPro:    autoMaxProcsOption,
 	}
 }
 
