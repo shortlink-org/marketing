@@ -61,7 +61,7 @@ RUN --mount=type=cache,id=pnpm-store,target=/pnpm/store \
 ########################
 # 2️⃣  Runtime stage
 ########################
-FROM nginx:1.29-alpine-otel AS runtime
+FROM ghcr.io/nginxinc/nginx-unprivileged:1.29-alpine-otel AS runtime
 
 ###############################################################################
 # Build-time args (re-declared so we can inject them into labels)
