@@ -2,6 +2,12 @@ server {
     listen      8080;
     listen [::]:8080;
     server_name _;
+    absolute_redirect off;
+    port_in_redirect off;
+
+    location ~ ^/(.*)/$ {
+        try_files /$1.html =404;
+    }
 
     gzip on;
     gzip_proxied any;
@@ -11,23 +17,31 @@ server {
     root   /usr/share/nginx/html;
 
     location ~* \.(?:ico|gif|jpe?g|png|woff2?|eot|otf|ttf|svg|js|css)$ {
-      try_files $uri $uri/;
+        try_files $uri $uri/;
     }
 
     location / {
-      index index.html;
-      try_files $uri $uri/ /index.html =404;
+        otel_trace_sample_ratio $adaptive_sample;
+        try_files $uri.html $uri $uri/ @htmlext;
     }
 
-    location /live {
-        access_log off;
-        default_type text/plain;
-        return 200 "healthy\n";
+    location ~ \.html$ {
+        try_files $uri =404;
     }
 
-    location /ready {
+    location @htmlext {
+        rewrite ^(.*)$ $1.html last;
+    }
+
+    location = /live {
         access_log off;
-        default_type text/plain;
-        return 200 "healthy\n";
+        default_type application/json;
+        return 200 '{"status":"healthy"}';
+    }
+
+    location = /ready {
+        access_log off;
+        default_type application/json;
+        return 200 '{"status":"ready"}';
     }
 }
