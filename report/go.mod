@@ -6,7 +6,7 @@ toolchain go1.25.4
 
 require (
 	github.com/google/wire v0.7.0
-	github.com/shortlink-org/shortlink v0.0.0-20250531003000-510e6143a4d1
+	github.com/shortlink-org/shortlink 0e2011bb7da0
 	github.com/spf13/viper v1.21.0
 	github.com/stretchr/testify v1.11.1
 	go.opentelemetry.io/otel/trace v1.38.0
