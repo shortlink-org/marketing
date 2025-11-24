@@ -23,7 +23,7 @@
     "@mui/material": "^7.3.2",
     "@mui/material-nextjs": "^7.3.2",
     "@next/env": "^15.5.3",
-    "@sentry/nextjs": "^10.12.0",
+    "@sentry/nextjs": "^10.27.0",
     "@shortlink-org/eslint-plugin-shortlink": "0.20250809.193608",
     "@shortlink-org/ui-kit": "^0.20250811.204524",
     "@tailwindcss/line-clamp": "^0.4.4",
