@@ -2,4 +2,4 @@
   parallel:
     matrix:
       - HELM_CHART_NAME: landing
-        HELM_CHART_PATH: ops/Helm/$HELM_CHART_NAME
+        HELM_CHART_PATH: landing/ops/Helm/$HELM_CHART_NAME
