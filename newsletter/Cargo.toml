@@ -54,7 +54,7 @@ anyhow = "1.0.99"
 
 [dev-dependencies]
 cucumber = "0.21"
-cucumber-expressions = "0.4"
+cucumber-expressions = "0.5"
 tokio-test = "0.4"
 
 [dependencies.uuid]
