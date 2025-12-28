@@ -22,7 +22,7 @@
     "react-toastify": "^11.0.5"
   },
   "devDependencies": {
-    "@types/node": "^22.18.3",
+    "@types/node": "^24.0.0",
     "@types/react": "^19.1.13",
     "@types/react-dom": "^19.0.4",
     "eslint": "^9.35.0",
