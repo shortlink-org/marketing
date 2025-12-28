@@ -1,3 +1,7 @@
 ignoredBuiltDependencies:
   - '@sentry/cli'
   - cypress
+
+onlyBuiltDependencies:
+  - esbuild
+  - sharp
