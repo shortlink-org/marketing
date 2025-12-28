@@ -28,6 +28,17 @@ ingress:
       hosts:
         - shortlink.best
 
+# ==============================================================================
+# HTTPRoute configuration for Gateway API
+httpRoute:
+  enabled: true
+  gatewayName: external-gateway
+  gatewayNamespace: istio-system
+  hostnames:
+    - shortlink.best
+  path: /
+  port: 8080
+
 deploy:
   replicaCount: 1
 

@@ -97,9 +97,9 @@ USER nginx-user  # switch to non-root user for security
 ###############################################################################
 # NGINX configuration & static assets
 ###############################################################################
-COPY ./ops/dockerfile/conf/ui.local     /etc/nginx/conf.d/default.conf
-COPY ./ops/dockerfile/conf/nginx.conf   /etc/nginx/nginx.conf
-COPY ./ops/dockerfile/conf/templates    /etc/nginx/template
+COPY ./landing/ops/dockerfile/conf/ui.local     /etc/nginx/conf.d/default.conf
+COPY ./landing/ops/dockerfile/conf/nginx.conf   /etc/nginx/nginx.conf
+COPY ./landing/ops/dockerfile/conf/templates    /etc/nginx/template
 
 # Next.js export build from the builder stage
 COPY --from=builder /app/out /usr/share/nginx/html

@@ -2,7 +2,7 @@ apiVersion: v2
 appVersion: "1.0.0"
 name: landing
 description: ShortLink landing service
-version: 0.7.3
+version: 0.8.0
 kubeVersion: ">= 1.30.0 || >= v1.30.0-0"
 keywords:
   - ui
@@ -20,5 +20,5 @@ type: application
 deprecated: false
 dependencies:
   - name: shortlink-template
-    version: 0.9.6
-    repository: "file://../../../shortlink-template"
+    version: 0.10.0
+    repository: oci://ghcr.io/shortlink-org/charts
