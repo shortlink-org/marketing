@@ -102,7 +102,7 @@ jobs:
         DATABASE_URL: postgres://postgres:postgres@localhost:5432/newsletter_test
 
     - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v4
+      uses: codecov/codecov-action@v5
       with:
         file: ./newsletter/coverage/cobertura.xml
         directory: ./newsletter
