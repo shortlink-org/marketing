@@ -10,8 +10,8 @@ require (
 	github.com/spf13/viper v1.21.0
 	github.com/stretchr/testify v1.11.1
 	go.opentelemetry.io/otel/trace v1.38.0
-	go.temporal.io/api v1.53.0
-	go.temporal.io/sdk v1.36.0
+	go.temporal.io/api v1.54.0
+	go.temporal.io/sdk v1.38.0
 )
 
 require (
@@ -81,7 +81,7 @@ require (
 	github.com/nats-io/nkeys v0.4.10 // indirect
 	github.com/nats-io/nuid v1.0.1 // indirect
 	github.com/neo4j/neo4j-go-driver/v5 v5.28.0 // indirect
-	github.com/nexus-rpc/sdk-go v0.3.0 // indirect
+	github.com/nexus-rpc/sdk-go v0.5.1 // indirect
 	github.com/ory/client-go v1.18.5 // indirect
 	github.com/pelletier/go-toml/v2 v2.2.4 // indirect
 	github.com/pierrec/lz4/v4 v4.1.22 // indirect
