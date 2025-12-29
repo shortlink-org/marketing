@@ -1,6 +1,7 @@
 # NOTE:
 # APPLICATION     - Name application
 # REGISTRY_IMAGE  - Registry image
+# WORKDIR         - Working directory
 # DOCKERFILE_PATH - Path to Dockerfile
 # CMD_PATH        - Path to a binary file
 .matrix_build_docker:
@@ -8,6 +9,7 @@
     matrix:
       - APPLICATION: landing
         REGISTRY_IMAGE: $CI_REGISTRY_IMAGE/$APPLICATION
+        WORKDIR: $APPLICATION
         DOCKERFILE_PATH: landing/ops/dockerfile/landing.Dockerfile
         DOCKERFILE_ARGS: >-
           --build-arg API_URI=https://shortlink.best
