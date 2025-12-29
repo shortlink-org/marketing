@@ -1,7 +1,6 @@
 .*
 *.yml
 *.md
-*
 
 # Exclude
 !landing
