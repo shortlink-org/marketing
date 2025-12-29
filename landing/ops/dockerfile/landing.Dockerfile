@@ -1,4 +1,4 @@
-# syntax=docker/dockerfile:1.18
+# syntax=docker/dockerfile:1.20
 
 ###############################################################################
 # Global BuildKit options (optional SBOM attestation―leave if you need them)
@@ -11,7 +11,7 @@ ARG BUILDKIT_SBOM_SCAN_CONTEXT=true
 ###############################################################################
 # Build-stage arguments
 ###############################################################################
-ARG NODE_VERSION=24-alpine
+ARG NODE_VERSION=24.11.1-alpine
 
 ########################
 # 1️⃣  Builder stage
@@ -43,7 +43,10 @@ RUN corepack enable && corepack prepare pnpm@latest --activate
 
 WORKDIR /app
 
-COPY ./landing/ ./
+COPY . .
+
+# Set development environment for build (stage can be overridden at runtime)
+ENV NODE_ENV=development
 
 # Create npmrc with proper configuration
 RUN echo '@shortlink-org:registry=https://gitlab.com/api/v4/packages/npm/' > .npmrc \
@@ -54,8 +57,9 @@ RUN echo '@shortlink-org:registry=https://gitlab.com/api/v4/packages/npm/' > .np
 
 # Install & build with cache for pnpm store
 RUN --mount=type=cache,id=pnpm-store,target=/pnpm/store \
-    rm -rf node_modules package-lock.json \
- && pnpm install --frozen-lockfile \
+    npm install -g patch-package \
+ && rm -rf node_modules package-lock.json \
+ && pnpm install --config.frozen-lockfile=true --include=dev \
  && pnpm run build
 
 ########################
@@ -70,14 +74,17 @@ ARG CI_COMMIT_SHA
 ARG CI_COMMIT_TAG
 ARG BUILD_DATE
 
+# Set production environment
+ENV NODE_ENV=production
+
 ###############################################################################
 # OCI labels (single instruction = single layer)
 ###############################################################################
 LABEL \
-  org.opencontainers.image.title="ui-kit" \
-  org.opencontainers.image.description="Shortlink landing" \
-  org.opencontainers.image.url="https://shortlink.best/" \
-  org.opencontainers.image.source="https://github.com/shortlink-org/shortlink" \
+  org.opencontainers.image.title="landing" \
+  org.opencontainers.image.description="Shortlink Landing Page" \
+  org.opencontainers.image.url="https://shortlink.best" \
+  org.opencontainers.image.source="https://github.com/shortlink-org/marketing" \
   org.opencontainers.image.licenses="MIT" \
   org.opencontainers.image.vendor="Shortlink" \
   org.opencontainers.image.authors="Viktor Login <batazor111@gmail.com>" \
@@ -90,25 +97,27 @@ LABEL \
 ###############################################################################
 USER root
 RUN apk add --no-cache curl \
- && rm /etc/nginx/conf.d/default.conf \
- && adduser -D -u 1001 -g '' nginx-user
-USER nginx-user  # switch to non-root user for security
+ && rm /etc/nginx/conf.d/default.conf
 
 ###############################################################################
 # NGINX configuration & static assets
 ###############################################################################
-COPY ./landing/ops/dockerfile/conf/ui.local     /etc/nginx/conf.d/default.conf
-COPY ./landing/ops/dockerfile/conf/nginx.conf   /etc/nginx/nginx.conf
-COPY ./landing/ops/dockerfile/conf/templates    /etc/nginx/template
+COPY ./ops/conf/ui.local   /etc/nginx/conf.d/default.conf
+COPY ./ops/conf/nginx.conf /etc/nginx/nginx.conf
 
 # Next.js export build from the builder stage
 COPY --from=builder /app/out /usr/share/nginx/html
 
+# Ensure correct permissions for the runtime user
+RUN chown -R 101:0 /etc/nginx /usr/share/nginx/html
+
 ###############################################################################
 # Health-check, port & runtime user
 ###############################################################################
+# Use the image's built-in non-root user (UID 101)
+USER 101
+
 HEALTHCHECK --interval=5s --timeout=5s --retries=3 \
   CMD curl -f http://localhost:8080/ || exit 1
 
 EXPOSE 8080
-USER nginx-user
