@@ -47,9 +47,10 @@ const nextConfig = {
     // ssr and displayName are configured by default
     emotion: true,
   },
+  reactCompiler: true,
+  typedRoutes: true,
   images: {
     loader: 'custom',
-    domains: ['images.unsplash.com'],
     formats: ['image/avif', 'image/webp'],
     remotePatterns: [
       {
@@ -74,8 +75,6 @@ const nextConfig = {
     webVitalsAttribution: ['CLS', 'FCP', 'FID', 'INP', 'LCP', 'TTFB'],
     clientTraceMetadata: ['sentry-trace', 'baggage'],
     cssChunking: true,
-    reactCompiler: true,
-    typedRoutes: true,
     viewTransition: true,
   },
   allowedDevOrigins: [
@@ -111,11 +110,6 @@ module.exports = withSentryConfig(
     // Upload a larger set of source maps for prettier stack traces (increases build time)
     widenClientFileUpload: true,
 
-    // Automatically annotate React components to show their full name in breadcrumbs and session replay
-    reactComponentAnnotation: {
-      enabled: true,
-    },
-
     // Uncomment to route browser requests to Sentry through a Next.js rewrite to circumvent ad-blockers.
     // This can increase your server load as well as your hosting bill.
     // Note: Check that the configured route will not match with your Next.js middleware, otherwise reporting of client-
@@ -125,13 +119,18 @@ module.exports = withSentryConfig(
     // Hides source maps from generated client bundles
     hideSourceMaps: true,
 
-    // Automatically tree-shake Sentry logger statements to reduce bundle size
-    disableLogger: true,
-
-    // Enables automatic instrumentation of Vercel Cron Monitors. (Does not yet work with App Router route handlers.)
-    // See the following for more information:
-    // https://docs.sentry.io/product/crons/
-    // https://vercel.com/docs/cron-jobs
-    automaticVercelMonitors: true,
+    // Webpack-specific options
+    webpack: {
+      // Automatically tree-shake Sentry logger statements to reduce bundle size
+      treeshake: {
+        removeDebugLogging: true,
+      },
+      // Automatically annotate React components to show their full name in breadcrumbs and session replay
+      reactComponentAnnotation: {
+        enabled: true,
+      },
+      // Enables automatic instrumentation of Vercel Cron Monitors
+      automaticVercelMonitors: true,
+    },
   }
 );

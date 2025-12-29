@@ -179,7 +179,7 @@ const Home = () => {
       >
         Version: <strong>{process.env.NEXT_PUBLIC_GIT_TAG}</strong>
         {' && '}
-        <Link href={process.env.NEXT_PUBLIC_CI_PIPELINE_URL} style={{ color: 'inherit', textDecoration: 'underline' }}>
+        <Link href={(process.env.NEXT_PUBLIC_CI_PIPELINE_URL || '#') as any} style={{ color: 'inherit', textDecoration: 'underline' }}>
           Pipeline: <strong>{process.env.NEXT_PUBLIC_PIPELINE_ID}</strong>
         </Link>
       </Typography>

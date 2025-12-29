@@ -44,7 +44,7 @@ const TabContent: React.FC<TabContentProps> = ({ title, cards }) => {
         sx={{ padding: '1em 1em' }}
       >
         {cards.map((card) => (
-          <Link href={card.url} key={card.url} passHref>
+          <Link href={card.url as any} key={card.url} passHref>
             <Button
               variant="outlined"
               size="large"
