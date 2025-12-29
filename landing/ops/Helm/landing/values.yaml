@@ -8,27 +8,6 @@ serviceAccount:
   create: true
 
 # ==============================================================================
-ingress:
-  enabled: true
-  ingressClassName: nginx
-  annotations:
-    cert-manager.io/cluster-issuer: cert-manager-production
-    nginx.ingress.kubernetes.io/enable-owasp-core-rules: "true"
-    nginx.ingress.kubernetes.io/enable-opentelemetry: "true"
-
-  hostname: shortlink.best
-  paths:
-    - path: /
-      service:
-        name: shortlink-marketing-landing
-        port: 8080
-
-  tls:
-    - secretName: landing-tls
-      hosts:
-        - shortlink.best
-
-# ==============================================================================
 # HTTPRoute configuration for Gateway API
 httpRoute:
   enabled: true

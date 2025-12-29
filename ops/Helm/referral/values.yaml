@@ -16,18 +16,15 @@ serviceAccount:
   automountServiceAccountToken: false
 
 # ==============================================================================
-# TODO: Setting route
-ingress:
+# HTTPRoute configuration for Gateway API
+httpRoute:
   enabled: true
-  # type ingress-controller: istio, cilium, nginx
-  ingressClassName: istio
-  istio:
-    match:
-      - uri:
-          prefix: /
-    route:
-      destination:
-        port: 8000
+  gatewayName: external-gateway
+  gatewayNamespace: istio-system
+  hostnames:
+    - referral.shortlink.best
+  path: /
+  port: 8000
 
 # ==============================================================================
 deploy:
