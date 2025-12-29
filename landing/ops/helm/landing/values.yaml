@@ -12,7 +12,7 @@ serviceAccount:
 httpRoute:
   enabled: true
   gatewayName: external-gateway
-  gatewayNamespace: istio-system
+  gatewayNamespace: istio-ingress
   hostnames:
     - shortlink.best
   path: /
