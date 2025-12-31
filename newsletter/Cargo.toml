@@ -53,7 +53,7 @@ tracing-subscriber = { version = "0.3", features = ["fmt", "json", "env-filter"]
 anyhow = "1.0.99"
 
 [dev-dependencies]
-cucumber = "0.21"
+cucumber = "0.22"
 cucumber-expressions = "0.5"
 tokio-test = "0.4"
 
