@@ -207,9 +207,9 @@ testcontainers==4.13.2 \
     --hash=sha256:0209baf8f4274b568cde95bef2cadf7b1d33b375321f793790462e235cd684ee \
     --hash=sha256:2315f1e21b059427a9d11e8921f85fef322fbe0d50749bcca4eaa11271708ba4
     # via referral (pyproject.toml)
-uvicorn==0.35.0 \
-    --hash=sha256:197535216b25ff9b785e29a0b79199f55222193d47f820816e7da751e9bc8d4a \
-    --hash=sha256:bc662f087f7cf2ce11a1d7fd70b90c9f98ef2e2831556dd078d131b96cc94a01
+uvicorn==0.40.0 \
+    --hash=sha256:839676675e87e73694518b5574fd0f24c9d97b46bea16df7b8c05ea1a51071ea \
+    --hash=sha256:c6c8f55bc8bf13eb6fa9ff87ad62308bbbc33d0b67f84293151efe87e0d5f2ee
     # via referral (pyproject.toml)
 Werkzeug==3.1.5 \
     --hash=sha256:5111e36e91086ece91f93268bb39b4a35c1e6f1feac762c9c822ded0a4e322dc \
