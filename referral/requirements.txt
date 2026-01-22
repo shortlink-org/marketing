@@ -66,11 +66,11 @@ protobuf==6.33.4 \
     --hash=sha256:c7c64f259c618f0bef7bee042075e390debbf9682334be2b67408ec7c1c09ee6 \
     --hash=sha256:dc2e61bca3b10470c1912d166fe0af67bfc20eb55971dcef8dfa48ce14f0ed91
     # via referral (pyproject.toml)
-pyroscope-io==0.8.11 \
-    --hash=sha256:2df4cd4cbfb451c27cad20f905bf612ffc306a96820e316f7575c84433eadb24 \
-    --hash=sha256:50164c96cf5533ce795a114c6181c5d2aa162c9dae59277b6ac557820c411b7a \
-    --hash=sha256:644dbd81b162b6d678ef9989649bf936c62373fd7bba16fb6490272f453ff159 \
-    --hash=sha256:a415072dd7e8964d66001fff2446d7426a505cfca1a89f3c912314537622a4cd
+pyroscope-io==0.8.16 \
+    --hash=sha256:6b91ce5b240f8de756c16a17022ca8e25ef8a4eed461c7d074b8a0841cf7b445 \
+    --hash=sha256:86f0f047554ff62bd92c3e5a26bc2809ccd467d11fbacb9fef898ba299dbda59 \
+    --hash=sha256:dc98355e27c0b7b61f27066500fe1045b70e9459bb8b9a3082bc4755cb6392b6 \
+    --hash=sha256:e07edcfd59f5bdce42948b92c9b118c824edbd551730305f095a6b9af401a9e8
     # via referral (pyproject.toml)
 pytest==9.0.2 \
     --hash=sha256:711ffd45bf766d5264d487b917733b453d917afd2b0ad65223959f59089f875b \
