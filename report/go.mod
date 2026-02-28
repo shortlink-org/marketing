@@ -2,7 +2,7 @@ module github.com/shortlink-org/shortlink/boundaries/marketing/report
 
 go 1.24.2
 
-toolchain go1.25.6
+toolchain go1.26.0
 
 require (
 	github.com/google/wire v0.7.0
