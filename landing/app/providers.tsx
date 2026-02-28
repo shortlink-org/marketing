@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { DEFAULT_ONLOAD_NAME, DEFAULT_SCRIPT_ID, SCRIPT_URL } from '@marsidev/react-turnstile'
 import { Turnstile } from '@marsidev/react-turnstile'
 import CssBaseline from '@mui/material/CssBaseline'
@@ -43,31 +43,67 @@ const theme = createTheme({
 
 // @ts-ignore
 export function Providers({ children, ...props }) {
-  const [isCaptcha, setIsCaptcha] = useState(false)
+  const siteKey = process.env.NEXT_PUBLIC_CLOUDFLARE_SITE_KEY
+  const isCaptchaEnabled = Boolean(siteKey)
+
+  const [isCaptcha, setIsCaptcha] = useState(!isCaptchaEnabled)
+  const [turnstileVersion, setTurnstileVersion] = useState(0)
+
+  useEffect(() => {
+    if (!isCaptchaEnabled) {
+      return
+    }
+
+    const handlePageShow = (event: PageTransitionEvent) => {
+      if (!event.persisted) {
+        return
+      }
+
+      // BFCache restore can return with an expired/used token.
+      // Remount widget to force a fresh token after back/forward navigation.
+      setIsCaptcha(false)
+      setTurnstileVersion((version) => version + 1)
+    }
+
+    window.addEventListener('pageshow', handlePageShow)
+
+    return () => {
+      window.removeEventListener('pageshow', handlePageShow)
+    }
+  }, [isCaptchaEnabled])
 
   return (
     <AppRouterCacheProvider>
       <NextThemeProvider enableSystem attribute="class" defaultTheme={'light'}>
         <MuiThemeProvider theme={theme}>
-          <Script id={DEFAULT_SCRIPT_ID} src={`${SCRIPT_URL}?onload=${DEFAULT_ONLOAD_NAME}`} strategy="afterInteractive" />
+          {isCaptchaEnabled && (
+            <Script id={DEFAULT_SCRIPT_ID} src={`${SCRIPT_URL}?onload=${DEFAULT_ONLOAD_NAME}`} strategy="afterInteractive" />
+          )}
           <InitColorSchemeScript />
 
           <div className="flex m-auto text-black dark:bg-gray-800 dark:text-white flex-col">
             {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
             <CssBaseline />
 
-            <div style={{ position: 'absolute', top: '1em', left: '1em' }}>
-              <Turnstile
-                siteKey={process.env.NEXT_PUBLIC_CLOUDFLARE_SITE_KEY}
-                injectScript={false}
-                className="captcha"
-                onSuccess={() => setIsCaptcha(true)}
-                onError={() => setIsCaptcha(false)}
-                onAbort={() => setIsCaptcha(false)}
-              />
-            </div>
+            {!isCaptcha && isCaptchaEnabled && (
+              <div style={{ position: 'absolute', top: '1em', left: '1em' }}>
+                <Turnstile
+                  key={turnstileVersion}
+                  siteKey={siteKey as string}
+                  injectScript={false}
+                  className="captcha"
+                  options={{
+                    refreshExpired: 'auto',
+                    refreshTimeout: 'auto',
+                  }}
+                  onSuccess={() => setIsCaptcha(true)}
+                  onExpire={() => setIsCaptcha(false)}
+                  onError={() => setIsCaptcha(false)}
+                />
+              </div>
+            )}
 
-            <div style={{ marginTop: '6em' }}>
+            <div style={{ marginTop: isCaptcha ? 0 : '6em' }}>
               {isCaptcha && children}
             </div>
           </div>
