@@ -25,7 +25,7 @@
     "@next/env": "^16.1.6",
     "@sentry/nextjs": "^10.40.0",
     "@shortlink-org/eslint-plugin-shortlink": "0.20250809.193608",
-    "@shortlink-org/ui-kit": "^0.20251206.220856",
+    "@shortlink-org/ui-kit": "^0.20260130.0",
     "@tailwindcss/line-clamp": "^0.4.4",
     "babel-plugin-react-compiler": "19.1.0-rc.3",
     "import-in-the-middle": "^2.0.6",
