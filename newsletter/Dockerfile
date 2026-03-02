@@ -1,5 +1,5 @@
 # Multi-stage build for Rust newsletter service
-FROM rust:1.92-slim as builder
+FROM rust:1.93-slim as builder
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
