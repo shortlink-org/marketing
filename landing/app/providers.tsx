@@ -7,7 +7,7 @@ import CssBaseline from '@mui/material/CssBaseline'
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v14-appRouter'
 import { ThemeProvider as MuiThemeProvider, createTheme } from '@mui/material/styles'
 import InitColorSchemeScript from '@mui/material/InitColorSchemeScript'
-import { theme as baseTheme } from '@shortlink-org/ui-kit/dist/theme/theme'
+import { theme as baseTheme } from '@shortlink-org/ui-kit'
 import Script from 'next/script'
 import { ThemeProvider as NextThemeProvider } from 'next-themes'
 
