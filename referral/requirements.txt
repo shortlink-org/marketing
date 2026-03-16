@@ -97,9 +97,9 @@ quart==0.20.0 \
     --hash=sha256:003c08f551746710acb757de49d9b768986fd431517d0eb127380b656b98b8f1 \
     --hash=sha256:08793c206ff832483586f5ae47018c7e40bdd75d886fee3fabbdaa70c2cf505d
     # via referral (pyproject.toml)
-redis==7.1.0 \
-    --hash=sha256:23c52b208f92b56103e17c5d06bdc1a6c2c0b3106583985a76a18f83b265de2b \
-    --hash=sha256:b1cc3cfa5a2cb9c2ab3ba700864fb0ad75617b41f01352ce5779dabf6d5f9c3c
+redis==7.3.0 \
+    --hash=sha256:4d1b768aafcf41b01022410b3cc4f15a07d9b3d6fe0c66fc967da2c88e551034 \
+    --hash=sha256:9d4fcb002a12a5e3c3fbe005d59c48a2cc231f87fbb2f6b70c2d89bb64fec364
     # via referral (pyproject.toml)
 ruff==0.15.4 \
     --hash=sha256:04196ad44f0df220c2ece5b0e959c2f37c777375ec744397d21d15b50a75264f \
