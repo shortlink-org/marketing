@@ -1,4 +1,6 @@
+{{- if (.Capabilities.APIVersions.Has "kargo.akuity.io/v1alpha1/Project") }}
 apiVersion: kargo.akuity.io/v1alpha1
 kind: Project
 metadata:
   name: marketing
+{{- end }}
