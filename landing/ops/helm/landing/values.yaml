@@ -2,6 +2,10 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
+# Kargo (Warehouse/Stage) — по умолчанию выкл., деплой не требует CRD kargo.akuity.io.
+kargo:
+  enabled: false
+
 # -- Pods Service Account
 # @ignored ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/
 serviceAccount:

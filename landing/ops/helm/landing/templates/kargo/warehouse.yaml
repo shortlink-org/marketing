@@ -1,3 +1,4 @@
+{{- if .Values.kargo.enabled }}
 apiVersion: kargo.akuity.io/v1alpha1
 kind: Warehouse
 metadata:
@@ -11,3 +12,4 @@ spec:
     - git:
         repoURL: https://github.com/shortlink-org/marketing.git
         branch: main
+{{- end }}
