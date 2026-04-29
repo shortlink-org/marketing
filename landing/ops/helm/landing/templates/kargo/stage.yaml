@@ -1,4 +1,4 @@
-{{- if .Values.kargo.enabled }}
+{{- if and .Values.kargo.enabled (.Capabilities.APIVersions.Has "kargo.akuity.io/v1alpha1/Stage") }}
 apiVersion: kargo.akuity.io/v1alpha1
 kind: Stage
 metadata:
