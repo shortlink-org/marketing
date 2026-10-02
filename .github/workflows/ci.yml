@@ -72,7 +72,7 @@ jobs:
     - name: Install Rust
       uses: dtolnay/rust-toolchain@stable
       with:
-        toolchain: 1.82
+        toolchain: 1.99
         components: rustfmt, clippy
 
     - name: Cache Cargo dependencies
